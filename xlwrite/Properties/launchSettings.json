@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "xlwrite": {
+      "commandName": "Project"
+    },
+    "xlwrite help": {
+      "commandName": "Project",
+      "commandLineArgs": "-h"
+    }
+  }
+}
