@@ -25,17 +25,35 @@ namespace xlwrite
                 return;
             }
 
-            if (string.Equals(args[0], "block"))
+            string command = args[0];
+            if (string.Equals(command, "block"))
             {
+                if (args.Length < 4) {
+                    Console.WriteLine("Not enough arguments for block.");
+                    Console.WriteLine();
+                    Console.WriteLine(HelpText());
+                    return;
+                }
 
+                string blockResults = BlockWrite(args[1], args[2], args[3]);
+                return;
             }
-            else if (string.Equals(args[0], "ind"))
-            {
 
+            else if (string.Equals(command, "ind"))
+            {
+                if (args.Length < 3) {
+                    Console.WriteLine("Not enough arguments for ind.");
+                    Console.WriteLine();
+                    Console.WriteLine(HelpText());
+                    return;
+                }
+
+                string indResults = IndWrite(args[1], args[2]);
+                return;
             }
             else
             {
-                Console.WriteLine($"Unknown sub command {args[0]}. Please review help.");
+                Console.WriteLine($"Unknown sub command {command}. Please review help.");
                 Console.WriteLine(HelpText());
                 return;
             }
@@ -68,15 +86,56 @@ namespace xlwrite
                 }
 
                 ExcelPackage package = new ExcelPackage(checkFiles[1]);
+                ExcelWorkbook workbook = package.Workbook;
+
+                ExcelWorksheet sheet = XlWriteUtilities.SheetFromCell(package, startCellLocation);
+
                 foreach ((Cell cell, string value) in cells)
                 {
-                    package.Workbook.Worksheets.First().Cells[cell.Row, cell.Column].Value = value;
+                    sheet.Cells[cell.Row, cell.Column].Value = value;
                 }
                 package.Save();
             }
             catch (Exception)
             {
                 return $"There was an error with the parsing.";
+            }
+
+            return "";
+        }
+
+        public static string IndWrite(string dataFilename, string filename) {
+            var checkFiles = new List<string> { dataFilename, filename }.Select(s => new FileInfo(Path.Combine(Environment.CurrentDirectory, s))).ToList();
+            if (checkFiles.Any(info => !info.Exists)) return $"Could not find file {checkFiles.First(info => !info.Exists)}.";
+
+            try {
+                var lines = File.ReadLines(checkFiles[0].FullName, Encoding.UTF8).Select(s => s.Split('\t'));
+                ExcelPackage package = new ExcelPackage(checkFiles[1]);
+
+                int lineNumber = 1;
+                foreach (var line in lines) {
+                    if (line.Length != 2) {
+                        Console.WriteLine($"Line #{lineNumber} does not have 2 fields. Found {line.Length} fields.");
+                        continue;
+                    }
+
+                    bool success = XlWriteUtilities.TryParseCellReference(line[0], out Cell cell);
+                    if (!success) {
+                        Console.WriteLine($"Could not parse cell reference {line[0]}.");
+                        continue;
+                    }
+
+                    ExcelWorksheet sheet = XlWriteUtilities.SheetFromCell(package, cell);
+
+                    sheet.Cells[cell.Row, cell.Column].Value = line[1];
+
+                    lineNumber++;
+                }
+
+                package.Save();
+            }
+            catch (Exception) {
+                return "There was an error in the writing.";
             }
 
             return "";
@@ -109,6 +168,8 @@ namespace xlwrite
 
     public class Cell
     {
+        public string SheetName;
+        public int SheetNum;
         public int Row;
         public int Column;
     }
@@ -117,7 +178,9 @@ namespace xlwrite
     {
         public static bool TryParseCellReference(string cellReference, out Cell cellLocation)
         {
-            Regex a1Regex = new Regex("^([A-Za-z]+)([0-9]+)$");
+            string worksheetNamePattern = @"'[^:\\/?*[\]]{1,31}'!";
+            string worksheetNumberPattern = @"[1-9]\d+!";
+            Regex a1Regex = new Regex($@"^(({worksheetNumberPattern})|({worksheetNamePattern}))?([A-Za-z]+)([0-9]+)$");
             Regex r1c1Regex = new Regex("^[rR]([0-9]+)[cC]([0-9]+)$");
 
             var a1Match = a1Regex.Match(cellReference);
@@ -127,8 +190,10 @@ namespace xlwrite
             {
                 cellLocation = new Cell
                 {
-                    Row = int.Parse(a1Match.Groups[2].Value),
-                    Column = a1Match.Groups[1].Value.ExcelColumnNameToInt()
+                    SheetName = a1Match.Groups[3].Success ? a1Match.Groups[3].Value.Substring(1, a1Match.Groups[3].Value.Length - 3) : null,
+                    SheetNum = a1Match.Groups[2].Success ? int.Parse(a1Match.Groups[2].Value.Substring(0, a1Match.Groups[2].Value.Length - 1)) : -1,
+                    Row = int.Parse(a1Match.Groups[5].Value),
+                    Column = a1Match.Groups[4].Value.ExcelColumnNameToInt()
                 };
                 return true;
             }
@@ -145,6 +210,29 @@ namespace xlwrite
             {
                 cellLocation = null;
                 return false;
+            }
+        }
+
+        public static ExcelWorksheet SheetFromCell(ExcelPackage package, Cell cell) {
+            ExcelWorkbook workbook = package.Workbook;
+
+            if (workbook.Worksheets.Count == 0) {
+                throw new InvalidOperationException($"There are no worksheets in file.");
+            }
+
+            if (cell.SheetNum > -1)
+            {
+                return workbook.Worksheets[cell.SheetNum - 1];
+            }
+            else if (cell.SheetName != null)
+            {
+                var matchingSheets = workbook.Worksheets.Where(s => s.Name == cell.SheetName).ToList();
+                if (!matchingSheets.Any()) throw new InvalidOperationException($"Could not find sheet named {cell.SheetName}");
+                return matchingSheets.First();
+            }
+            else
+            {
+                return workbook.Worksheets.First();
             }
         }
     }
