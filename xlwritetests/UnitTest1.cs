@@ -35,6 +35,17 @@ namespace Tests
         }
 
         [Test]
+        public void NumberedSheetTest()
+        {
+            string numberSheetReference = "1!B23";
+            bool success  = XlWriteUtilities.TryParseCellReference(numberSheetReference, out Cell cell);
+            Assert.AreEqual(null, cell.SheetName);
+            Assert.AreEqual(1, cell.SheetNum);
+            Assert.AreEqual(2, cell.Column);
+            Assert.AreEqual(23, cell.Row);
+        }
+
+        [Test]
         public void RegexTests()
         {
             string test = "]";
@@ -42,6 +53,8 @@ namespace Tests
             Regex regex = new Regex(@"[\]]");
 
             Assert.IsTrue(regex.Match(test).Success);
+
+
         }
     }
 }

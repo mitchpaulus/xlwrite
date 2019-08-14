@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
 using OfficeOpenXml;
@@ -28,7 +29,8 @@ namespace xlwrite
             string command = args[0];
             if (string.Equals(command, "block"))
             {
-                if (args.Length < 4) {
+                if (args.Length < 4)
+                {
                     Console.WriteLine("Not enough arguments for block.");
                     Console.WriteLine();
                     Console.WriteLine(HelpText());
@@ -36,12 +38,14 @@ namespace xlwrite
                 }
 
                 string blockResults = BlockWrite(args[1], args[2], args[3]);
+                Console.WriteLine(blockResults);
                 return;
             }
 
             else if (string.Equals(command, "ind"))
             {
-                if (args.Length < 3) {
+                if (args.Length < 3)
+                {
                     Console.WriteLine("Not enough arguments for ind.");
                     Console.WriteLine();
                     Console.WriteLine(HelpText());
@@ -49,6 +53,7 @@ namespace xlwrite
                 }
 
                 string indResults = IndWrite(args[1], args[2]);
+                Console.WriteLine(indResults);
                 return;
             }
             else
@@ -64,81 +69,124 @@ namespace xlwrite
             bool success = XlWriteUtilities.TryParseCellReference(cellReference, out Cell startCellLocation);
             if (!success) return $"Could not parse the cell reference {cellReference}.";
 
+            var checkFiles = new List<string> { dataFilename, filename }
+                .Where(name => !string.Equals("-", name))
+                .Select(s => new FileInfo(Path.Combine(Environment.CurrentDirectory, s)))
+                .ToList();
+
+            if (checkFiles.Any(info => !info.Exists)) return $"Could not find file {checkFiles.First(info => !info.Exists)}.";
+
+            List<string> li;
+            try
+            {
+                if (dataFilename == "-")
+                {
+                    li = new List<string>();
+                    using (TextReader reader = Console.In)
+                    {
+                        string text;
+                        while ((text = reader.ReadLine()) != null)
+                        {
+                            Console.WriteLine(text);
+                            li.Add(text);
+                        }
+                    }
+                }
+                else
+                {
+                    FileInfo fullDataFilename = new FileInfo(Path.Combine(Environment.CurrentDirectory, dataFilename));
+                    li = File.ReadLines(fullDataFilename.FullName, Encoding.UTF8).ToList();
+                }
+            }
+            catch (Exception)
+            {
+                return "Could not read data from data source.";
+            }
+
+
+            IEnumerable<string[]> lines = li.Select(s => s.Split('\t'));
+            List<(Cell cell, string value)> cells = new List<(Cell cell, string value)>();
+
+            int index = 0;
+            foreach (string[] fields in lines)
+            {
+                int fieldIndex = 0;
+                foreach (string field in fields)
+                {
+                    cells.Add((new Cell { Row = startCellLocation.Row + index, Column = startCellLocation.Column + fieldIndex }, field));
+                    fieldIndex++;
+                }
+                index++;
+            }
+            try
+            {
+                FileInfo excelFile = new FileInfo(Path.Combine(Environment.CurrentDirectory, filename));
+                ExcelPackage package = new ExcelPackage(excelFile);
+
+                ExcelWorksheet sheet = XlWriteUtilities.SheetFromCell(package, startCellLocation);
+
+                foreach ((Cell cell, string value) in cells)
+                {
+                    sheet.Cells[cell.Row, cell.Column].Value = GetValue(value);
+                }
+                package.Save();
+            }
+            catch (Exception exception)
+            {
+                return $"There was an error with writing the data to the excel file.\n{exception.Message}";
+            }
+
+            return "";
+        }
+
+        public static string IndWrite(string dataFilename, string filename)
+        {
             var checkFiles = new List<string> { dataFilename, filename }.Select(s => new FileInfo(Path.Combine(Environment.CurrentDirectory, s))).ToList();
             if (checkFiles.Any(info => !info.Exists)) return $"Could not find file {checkFiles.First(info => !info.Exists)}.";
 
             try
             {
                 var lines = File.ReadLines(checkFiles[0].FullName, Encoding.UTF8).Select(s => s.Split('\t'));
-
-                List<(Cell cell, string value)> cells = new List<(Cell cell, string value)>();
-
-                int index = 0;
-                foreach (string[] fields in lines)
-                {
-                    int fieldIndex = 0;
-                    foreach (string field in fields)
-                    {
-                        cells.Add((new Cell { Row = startCellLocation.Row + index, Column = startCellLocation.Column + fieldIndex }, field));
-                        fieldIndex++;
-                    }
-                    index++;
-                }
-
-                ExcelPackage package = new ExcelPackage(checkFiles[1]);
-                ExcelWorkbook workbook = package.Workbook;
-
-                ExcelWorksheet sheet = XlWriteUtilities.SheetFromCell(package, startCellLocation);
-
-                foreach ((Cell cell, string value) in cells)
-                {
-                    sheet.Cells[cell.Row, cell.Column].Value = value;
-                }
-                package.Save();
-            }
-            catch (Exception)
-            {
-                return $"There was an error with the parsing.";
-            }
-
-            return "";
-        }
-
-        public static string IndWrite(string dataFilename, string filename) {
-            var checkFiles = new List<string> { dataFilename, filename }.Select(s => new FileInfo(Path.Combine(Environment.CurrentDirectory, s))).ToList();
-            if (checkFiles.Any(info => !info.Exists)) return $"Could not find file {checkFiles.First(info => !info.Exists)}.";
-
-            try {
-                var lines = File.ReadLines(checkFiles[0].FullName, Encoding.UTF8).Select(s => s.Split('\t'));
                 ExcelPackage package = new ExcelPackage(checkFiles[1]);
 
                 int lineNumber = 1;
-                foreach (var line in lines) {
-                    if (line.Length != 2) {
+                foreach (var line in lines)
+                {
+                    if (line.Length != 2)
+                    {
                         Console.WriteLine($"Line #{lineNumber} does not have 2 fields. Found {line.Length} fields.");
                         continue;
                     }
 
                     bool success = XlWriteUtilities.TryParseCellReference(line[0], out Cell cell);
-                    if (!success) {
+                    if (!success)
+                    {
                         Console.WriteLine($"Could not parse cell reference {line[0]}.");
                         continue;
                     }
 
                     ExcelWorksheet sheet = XlWriteUtilities.SheetFromCell(package, cell);
 
-                    sheet.Cells[cell.Row, cell.Column].Value = line[1];
+                    sheet.Cells[cell.Row, cell.Column].Value = GetValue(line[1]);
 
                     lineNumber++;
                 }
 
                 package.Save();
             }
-            catch (Exception) {
+            catch (Exception)
+            {
                 return "There was an error in the writing.";
             }
 
             return "";
+        }
+
+        public static object GetValue(string data)
+        {
+            if (double.TryParse(data, out double numericValue)) return numericValue;
+            if (DateTime.TryParse(data, out DateTime dateTime)) return dateTime;
+            return data;
         }
 
         public static string HelpText()
@@ -179,7 +227,7 @@ namespace xlwrite
         public static bool TryParseCellReference(string cellReference, out Cell cellLocation)
         {
             string worksheetNamePattern = @"'[^:\\/?*[\]]{1,31}'!";
-            string worksheetNumberPattern = @"[1-9]\d+!";
+            string worksheetNumberPattern = @"[1-9]\d*!";
             Regex a1Regex = new Regex($@"^(({worksheetNumberPattern})|({worksheetNamePattern}))?([A-Za-z]+)([0-9]+)$");
             Regex r1c1Regex = new Regex("^[rR]([0-9]+)[cC]([0-9]+)$");
 
@@ -213,10 +261,12 @@ namespace xlwrite
             }
         }
 
-        public static ExcelWorksheet SheetFromCell(ExcelPackage package, Cell cell) {
+        public static ExcelWorksheet SheetFromCell(ExcelPackage package, Cell cell)
+        {
             ExcelWorkbook workbook = package.Workbook;
 
-            if (workbook.Worksheets.Count == 0) {
+            if (workbook.Worksheets.Count == 0)
+            {
                 throw new InvalidOperationException($"There are no worksheets in file.");
             }
 
