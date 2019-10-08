@@ -191,21 +191,33 @@ namespace xlwrite
         {
             StringBuilder helpText = new StringBuilder();
 
+            const int padding = -12;
+
             helpText.AppendLine("USAGE:");
             helpText.AppendLine("    xlwrite block STARTCELL DATAFILE EXCELFILE");
             helpText.AppendLine("    xlwrite ind DATAFILE EXCELFILE");
-            helpText.AppendLine("    [-h | --help]");
+            helpText.AppendLine("    xlwrite [-h | --help]");
             helpText.AppendLine();
             helpText.AppendLine("ARGS:");
-            helpText.AppendLine($"    {"STARTCELL",-12}Upper left hand corner cell. Either A1 form or R1C1 form.");
-            helpText.AppendLine($"    {"DATAFILE",-12}File with corresponding data.");
-            helpText.AppendLine($"    {"EXCELFILE",-12}Excel file to insert data into.");
+            helpText.AppendLine($"    {"STARTCELL",padding}Upper left hand corner cell. Either A1 form or R1C1 form.");
+            helpText.AppendLine($"    {"DATAFILE",padding}File with corresponding data.");
+            helpText.AppendLine($"    {"EXCELFILE",padding}Excel file to insert data into.");
             helpText.AppendLine();
             helpText.AppendLine("OPTIONS:");
-            helpText.AppendLine($"    {"-h, --help",-12}Print this help information and exit.");
+            helpText.AppendLine($"    {"-h, --help",padding}Print this help information and exit.");
             helpText.AppendLine();
             helpText.AppendLine("EXAMPLES:");
+            helpText.AppendLine("Simple block usage:");
             helpText.AppendLine("    xlwrite block A1 mydata.tsv excelfile.xlsx");
+            helpText.AppendLine();
+            helpText.AppendLine("If you are using the 'ind' option, the format of the file is:");
+            helpText.AppendLine();
+            helpText.AppendLine("<Cell Reference><Tab><Value>");
+            helpText.AppendLine();
+            helpText.AppendLine("For example:");
+            helpText.AppendLine();
+            helpText.AppendLine("B1\t101");
+            helpText.AppendLine("E5\tsome text");
 
 
             return helpText.ToString();
