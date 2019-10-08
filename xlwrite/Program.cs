@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
 using OfficeOpenXml;
@@ -149,24 +148,24 @@ namespace xlwrite
 
                 ExcelPackage package = new ExcelPackage(checkFiles[1]);
                 int lineNumber = 1;
-                foreach (string[] line in lines)
+                foreach (string[] field in lines)
                 {
-                    if (line.Length != 2)
+                    if (field.Length != 2)
                     {
-                        Console.WriteLine($"Line #{lineNumber} does not have 2 fields. Found {line.Length} fields.");
+                        Console.WriteLine($"Line #{lineNumber} does not have 2 fields. Found {field.Length} fields.");
                         continue;
                     }
 
-                    bool success = XlWriteUtilities.TryParseCellReference(line[0], out Cell cell);
+                    bool success = XlWriteUtilities.TryParseCellReference(field[0], out Cell cell);
                     if (!success)
                     {
-                        Console.WriteLine($"Could not parse cell reference {line[0]}.");
+                        Console.WriteLine($"Could not parse cell reference {field[0]}.");
                         continue;
                     }
 
                     ExcelWorksheet sheet = XlWriteUtilities.SheetFromCell(package, cell);
 
-                    sheet.Cells[cell.Row, cell.Column].Value = GetValue(line[1]);
+                    sheet.Cells[cell.Row, cell.Column].Value = GetValue(field[1]);
 
                     lineNumber++;
                 }
