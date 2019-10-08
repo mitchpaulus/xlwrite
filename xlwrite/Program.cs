@@ -38,7 +38,7 @@ namespace xlwrite
                 }
 
                 string blockResults = BlockWrite(args[1], args[2], args[3]);
-                Console.WriteLine(blockResults);
+                if (!string.IsNullOrWhiteSpace(blockResults)) Console.WriteLine(blockResults);
                 return;
             }
 
@@ -53,7 +53,7 @@ namespace xlwrite
                 }
 
                 string indResults = IndWrite(args[1], args[2]);
-                Console.WriteLine(indResults);
+                if (string.IsNullOrWhiteSpace(indResults)) Console.WriteLine(indResults);
                 return;
             }
             else
@@ -69,7 +69,7 @@ namespace xlwrite
             bool success = XlWriteUtilities.TryParseCellReference(cellReference, out Cell startCellLocation);
             if (!success) return $"Could not parse the cell reference {cellReference}.";
 
-            var checkFiles = new List<string> { dataFilename, filename }
+            List<FileInfo> checkFiles = new List<string> { dataFilename, filename }
                 .Where(name => !string.Equals("-", name))
                 .Select(s => new FileInfo(Path.Combine(Environment.CurrentDirectory, s)))
                 .ToList();
@@ -87,7 +87,6 @@ namespace xlwrite
                         string text;
                         while ((text = reader.ReadLine()) != null)
                         {
-                            Console.WriteLine(text);
                             li.Add(text);
                         }
                     }
@@ -146,11 +145,11 @@ namespace xlwrite
 
             try
             {
-                var lines = File.ReadLines(checkFiles[0].FullName, Encoding.UTF8).Select(s => s.Split('\t'));
-                ExcelPackage package = new ExcelPackage(checkFiles[1]);
+                IEnumerable<string[]> lines = File.ReadLines(checkFiles[0].FullName, Encoding.UTF8).Select(s => s.Split('\t'));
 
+                ExcelPackage package = new ExcelPackage(checkFiles[1]);
                 int lineNumber = 1;
-                foreach (var line in lines)
+                foreach (string[] line in lines)
                 {
                     if (line.Length != 2)
                     {
