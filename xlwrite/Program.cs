@@ -131,7 +131,10 @@ namespace xlwrite
             }
             catch (Exception exception)
             {
-                return $"There was an error with writing the data to the excel file.\n{exception.Message}";
+                string errorMessage = $"There was an error with writing the data to the excel file.\n{exception.Message}\n";
+                if (exception.InnerException != null) errorMessage += exception.InnerException.Message;
+
+                return errorMessage;
             }
 
             return "";
