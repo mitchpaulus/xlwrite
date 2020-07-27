@@ -52,7 +52,7 @@ namespace xlwrite
                 }
 
                 string indResults = IndWrite(args[1], args[2]);
-                if (string.IsNullOrWhiteSpace(indResults)) Console.WriteLine(indResults);
+                if (!string.IsNullOrWhiteSpace(indResults)) Console.WriteLine(indResults);
                 return;
             }
             else
