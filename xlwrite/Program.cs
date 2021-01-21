@@ -10,19 +10,19 @@ namespace xlwrite
 {
     class Program
     {
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
             if (args.Length == 0)
             {
                 Console.WriteLine("No arguments found. See help below.");
                 Console.WriteLine(HelpText());
-                return;
+                return 1;
             }
 
             if (args.Any(arg => string.Equals("-h", arg) || string.Equals("--help", arg)))
             {
                 Console.Write(HelpText());
-                return;
+                return 0;
             }
 
             string command = args[0];
@@ -33,12 +33,14 @@ namespace xlwrite
                     Console.WriteLine("Not enough arguments for block.");
                     Console.WriteLine();
                     Console.WriteLine(HelpText());
-                    return;
+                    return 1;
                 }
 
                 string blockResults = BlockWrite(args[1], args[2], args[3]);
-                if (!string.IsNullOrWhiteSpace(blockResults)) Console.WriteLine(blockResults);
-                return;
+                if (string.IsNullOrWhiteSpace(blockResults)) return 0;
+                Console.WriteLine(blockResults);
+                return 1;
+
             }
 
             else if (string.Equals(command, "ind"))
@@ -48,18 +50,19 @@ namespace xlwrite
                     Console.WriteLine("Not enough arguments for ind.");
                     Console.WriteLine();
                     Console.WriteLine(HelpText());
-                    return;
+                    return 1;
                 }
 
                 string indResults = IndWrite(args[1], args[2]);
-                if (!string.IsNullOrWhiteSpace(indResults)) Console.WriteLine(indResults);
-                return;
+                if (string.IsNullOrWhiteSpace(indResults)) return 0;
+                Console.WriteLine(indResults);
+                return 1;
             }
             else
             {
                 Console.WriteLine($"Unknown sub command {command}. Please review help.");
                 Console.WriteLine(HelpText());
-                return;
+                return 1;
             }
         }
 
@@ -81,13 +84,11 @@ namespace xlwrite
                 if (dataFilename == "-")
                 {
                     li = new List<string>();
-                    using (TextReader reader = Console.In)
+                    using TextReader reader = Console.In;
+                    string text;
+                    while ((text = reader.ReadLine()) != null)
                     {
-                        string text;
-                        while ((text = reader.ReadLine()) != null)
-                        {
-                            li.Add(text);
-                        }
+                        li.Add(text);
                     }
                 }
                 else
@@ -221,6 +222,11 @@ namespace xlwrite
             helpText.AppendLine();
             helpText.AppendLine("B1\t101");
             helpText.AppendLine("E5\tsome text");
+            helpText.AppendLine("");
+            helpText.AppendLine("If you want to specify a cell on a particular sheet, you can use the Excel format.");
+            helpText.AppendLine("Note that you will likely need some shell quoting to get the apostrophes through.");
+            helpText.AppendLine();
+            helpText.AppendLine("xlwrite block \"'Sheet 2'!B2\" data.txt excel.xlsx");
 
 
             return helpText.ToString();
