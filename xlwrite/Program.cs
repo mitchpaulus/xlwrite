@@ -71,7 +71,7 @@ namespace xlwrite
             bool success = XlWriteUtilities.TryParseCellReference(cellReference, out Cell startCellLocation);
             if (!success) return $"Could not parse the cell reference {cellReference}.";
 
-            List<FileInfo> checkFiles = new List<string> { dataFilename, filename }
+            List<FileInfo> checkFiles = new List<string> { dataFilename }
                 .Where(name => !string.Equals("-", name))
                 .Select(s => new FileInfo(Path.Combine(Environment.CurrentDirectory, s)))
                 .ToList();
@@ -121,6 +121,8 @@ namespace xlwrite
             {
                 FileInfo excelFile = new FileInfo(Path.Combine(Environment.CurrentDirectory, filename));
                 ExcelPackage package = new ExcelPackage(excelFile);
+
+                if (!excelFile.Exists) package.Workbook.Worksheets.Add("Sheet 1");
 
                 ExcelWorksheet sheet = XlWriteUtilities.SheetFromCell(package, startCellLocation);
 
@@ -204,8 +206,8 @@ namespace xlwrite
             helpText.AppendLine();
             helpText.AppendLine("ARGS:");
             helpText.AppendLine($"    {"STARTCELL",padding}Upper left hand corner cell. Either A1 form or R1C1 form.");
-            helpText.AppendLine($"    {"DATAFILE",padding}File with corresponding data.");
-            helpText.AppendLine($"    {"EXCELFILE",padding}Excel file to insert data into.");
+            helpText.AppendLine($"    {"DATAFILE",padding}File with corresponding data. '-' can be used to read in standard input.");
+            helpText.AppendLine($"    {"EXCELFILE",padding}Excel file to insert data into. If file doesn't exist, a new file is created.");
             helpText.AppendLine();
             helpText.AppendLine("OPTIONS:");
             helpText.AppendLine($"    {"-h, --help",padding}Print this help information and exit.");
@@ -213,6 +215,9 @@ namespace xlwrite
             helpText.AppendLine("EXAMPLES:");
             helpText.AppendLine("Simple block usage:");
             helpText.AppendLine("    xlwrite block A1 mydata.tsv excelfile.xlsx");
+            helpText.AppendLine();
+            helpText.AppendLine("Reading from standard input:");
+            helpText.AppendLine("    cat myfile.tsv | xlwrite block A1 - excelfile.xlsx");
             helpText.AppendLine();
             helpText.AppendLine("If you are using the 'ind' option, the format of the file is:");
             helpText.AppendLine();
