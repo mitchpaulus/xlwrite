@@ -1,3 +1,4 @@
+using System;
 using NUnit.Framework;
 using System.Text.RegularExpressions;
 using xlwrite;
@@ -49,12 +50,18 @@ namespace Tests
         public void RegexTests()
         {
             string test = "]";
-
             Regex regex = new Regex(@"[\]]");
-
             Assert.IsTrue(regex.Match(test).Success);
+        }
 
-
+        [Test]
+        public void DateParseTest()
+        {
+            string test = "1/6";
+            bool success = DateTime.TryParse(test, out DateTime dateTime);
+            // Print ISO 8601 date format
+            Console.WriteLine(dateTime.ToString("yyyy-MM-dd"));
+            Assert.IsTrue(success);
         }
     }
 }

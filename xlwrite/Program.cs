@@ -189,7 +189,8 @@ namespace xlwrite
         public static object GetValue(string data)
         {
             if (double.TryParse(data, out double numericValue)) return numericValue;
-            if (DateTime.TryParse(data, out DateTime dateTime)) return dateTime;
+            // This is to prevent fractions like 1/6 from being converted to dates.
+            if (data != null && data.Length > 8 && DateTime.TryParse(data, out DateTime dateTime)) return dateTime;
             return data;
         }
 
