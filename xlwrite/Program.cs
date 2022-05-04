@@ -14,8 +14,8 @@ namespace xlwrite
         {
             if (args.Length == 0)
             {
-                Console.WriteLine("No arguments found. See help below.");
-                Console.WriteLine(HelpText());
+                Console.Error.Write("No arguments found. See help below.\n");
+                Console.Error.Write(HelpText());
                 return 1;
             }
 
@@ -30,15 +30,15 @@ namespace xlwrite
             {
                 if (args.Length < 4)
                 {
-                    Console.WriteLine("Not enough arguments for block.");
-                    Console.WriteLine();
-                    Console.WriteLine(HelpText());
+                    Console.Error.Write("Not enough arguments for block.\n");
+                    Console.Error.Write("\n");
+                    Console.Error.Write(HelpText());
                     return 1;
                 }
 
                 string blockResults = BlockWrite(args[1], args[2], args[3]);
                 if (string.IsNullOrWhiteSpace(blockResults)) return 0;
-                Console.WriteLine(blockResults);
+                Console.Error.WriteLine(blockResults);
                 return 1;
 
             }
@@ -47,21 +47,20 @@ namespace xlwrite
             {
                 if (args.Length < 3)
                 {
-                    Console.WriteLine("Not enough arguments for ind.");
-                    Console.WriteLine();
-                    Console.WriteLine(HelpText());
+                    Console.Error.Write("Not enough arguments for ind.\n\n");
+                    Console.Error.Write(HelpText());
                     return 1;
                 }
 
                 string indResults = IndWrite(args[1], args[2]);
                 if (string.IsNullOrWhiteSpace(indResults)) return 0;
-                Console.WriteLine(indResults);
+                Console.Error.Write(indResults.EndWithNewline());
                 return 1;
             }
             else
             {
-                Console.WriteLine($"Unknown sub command {command}. Please review help.");
-                Console.WriteLine(HelpText());
+                Console.Error.WriteLine($"Unknown sub command {command}. Please review help.\n");
+                Console.Error.WriteLine(HelpText());
                 return 1;
             }
         }
@@ -158,14 +157,14 @@ namespace xlwrite
                 {
                     if (field.Length != 2)
                     {
-                        Console.WriteLine($"Line #{lineNumber} does not have 2 fields. Found {field.Length} fields.");
+                        Console.Error.Write($"Line #{lineNumber} does not have 2 fields. Found {field.Length} fields.\n");
                         continue;
                     }
 
                     bool success = XlWriteUtilities.TryParseCellReference(field[0], out Cell cell);
                     if (!success)
                     {
-                        Console.WriteLine($"Could not parse cell reference {field[0]}.");
+                        Console.Error.Write($"Could not parse cell reference {field[0]}.\n");
                         continue;
                     }
 
@@ -302,7 +301,7 @@ namespace xlwrite
             else if (cell.SheetName != null)
             {
                 var matchingSheets = workbook.Worksheets.Where(s => s.Name == cell.SheetName).ToList();
-                if (!matchingSheets.Any()) throw new InvalidOperationException($"Could not find sheet named {cell.SheetName}");
+                if (!matchingSheets.Any()) throw new InvalidOperationException($"Could not find sheet named '{cell.SheetName}' in file '{package.File.FullName}'.");
                 return matchingSheets.First();
             }
             else
@@ -330,5 +329,8 @@ namespace xlwrite
 
             return sum;
         }
+
+        // Check if string ends with Unix newline, if so, return it, else add newline
+        public static string EndWithNewline(this string inputString) => inputString.EndsWith("\n") ? inputString : inputString + "\n";
     }
 }
