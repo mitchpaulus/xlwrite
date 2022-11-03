@@ -1,17 +1,20 @@
 # `xlwrite`
 
-`xlwrite` is a command line utility to take data from text files and put
-them into Excel files.
+`xlwrite` is a command line utility to take data from text files and put them into Excel files.
 
+## Examples
 
-## Notes
+By default, `xlwrite` expects tab-separated data.
+You can then write the block of data to an excel file like:
 
-This project relies on EPPlus. If you are running the tool in a
-non-Windows environment, you will need to install `libgdiplus`.
-
-On Ubuntu or Debian based OS's this is:
-
-```sh
-sudo apt install libgdiplus
+```console
+xlwrite block A1 datafile.tsv spreadsheet.xlsx
 ```
 
+If you need to write to a particular sheet, you can specify that using the normal Excel range syntax.
+Notice that you will normally need to get the single quotes past your shell.
+Typically surrounding with double quotes will suffice.
+
+```console
+xlwrite block "'My Sheet'!A1" datafile.tsv spreadsheet.xlsx
+```
