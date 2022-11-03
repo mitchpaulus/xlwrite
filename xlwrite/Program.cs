@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -25,10 +26,19 @@ namespace xlwrite
                 return 0;
             }
 
-            string command = args[0];
+            int argIndex = 0;
+            bool createWorksheetIfRequired = false;
+
+            if (args[argIndex] == "-c" || args[argIndex] == "--create")
+            {
+                createWorksheetIfRequired = true;
+                argIndex++;
+            }
+
+            string command = args[argIndex];
             if (string.Equals(command, "block"))
             {
-                if (args.Length < 4)
+                if (args.Length - argIndex < 4)
                 {
                     Console.Error.Write("Not enough arguments for block.\n");
                     Console.Error.Write("\n");
@@ -36,39 +46,36 @@ namespace xlwrite
                     return 1;
                 }
 
-                string blockResults = BlockWrite(args[1], args[2], args[3]);
+                string blockResults = BlockWrite(args[argIndex + 1], args[argIndex + 2], args[argIndex + 3], createWorksheetIfRequired);
                 if (string.IsNullOrWhiteSpace(blockResults)) return 0;
                 Console.Error.WriteLine(blockResults);
                 return 1;
 
             }
 
-            else if (string.Equals(command, "ind"))
+            if (string.Equals(command, "ind"))
             {
-                if (args.Length < 3)
+                if (args.Length - argIndex < 3)
                 {
                     Console.Error.Write("Not enough arguments for ind.\n\n");
                     Console.Error.Write(HelpText());
                     return 1;
                 }
 
-                string indResults = IndWrite(args[1], args[2]);
+                string indResults = IndWrite(args[argIndex + 1], args[argIndex + 2], createWorksheetIfRequired);
                 if (string.IsNullOrWhiteSpace(indResults)) return 0;
                 Console.Error.Write(indResults.EndWithNewline());
                 return 1;
             }
-            else
-            {
-                Console.Error.WriteLine($"Unknown sub command {command}. Please review help.\n");
-                Console.Error.WriteLine(HelpText());
-                return 1;
-            }
+
+            Console.Error.WriteLine($"Unknown sub command {command}. Please review help.\n");
+            Console.Error.WriteLine(HelpText());
+            return 1;
         }
 
-        public static string BlockWrite(string cellReference, string dataFilename, string filename)
+        public static string BlockWrite(string cellReference, string dataFilename, string filename, bool createWorksheetIfRequired)
         {
-            bool success = XlWriteUtilities.TryParseCellReference(cellReference, out Cell startCellLocation);
-            if (!success) return $"Could not parse the cell reference {cellReference}.";
+            if (!XlWriteUtilities.TryParseCellReference(cellReference, out Cell? startCellLocation)) return $"Could not parse the cell reference {cellReference}.";
 
             List<FileInfo> checkFiles = new List<string> { dataFilename }
                 .Where(name => !string.Equals("-", name))
@@ -84,8 +91,7 @@ namespace xlwrite
                 {
                     li = new List<string>();
                     using TextReader reader = Console.In;
-                    string text;
-                    while ((text = reader.ReadLine()) != null)
+                    while (reader.ReadLine() is { } text)
                     {
                         li.Add(text);
                     }
@@ -121,9 +127,9 @@ namespace xlwrite
                 FileInfo excelFile = new FileInfo(Path.Combine(Environment.CurrentDirectory, filename));
                 ExcelPackage package = new ExcelPackage(excelFile);
 
-                if (!excelFile.Exists) package.Workbook.Worksheets.Add("Sheet 1");
+                // if (!excelFile.Exists) package.Workbook.Worksheets.Add("Sheet 1");
 
-                ExcelWorksheet sheet = XlWriteUtilities.SheetFromCell(package, startCellLocation);
+                ExcelWorksheet sheet = XlWriteUtilities.SheetFromCell(package, startCellLocation, createWorksheetIfRequired);
 
                 foreach ((Cell cell, string value) in cells)
                 {
@@ -142,7 +148,7 @@ namespace xlwrite
             return "";
         }
 
-        public static string IndWrite(string dataFilename, string filename)
+        public static string IndWrite(string dataFilename, string filename, bool createWorksheetIfRequired)
         {
             var checkFiles = new List<string> { dataFilename, filename }.Select(s => new FileInfo(Path.Combine(Environment.CurrentDirectory, s))).ToList();
             if (checkFiles.Any(info => !info.Exists)) return $"Could not find file {checkFiles.First(info => !info.Exists)}.";
@@ -161,14 +167,13 @@ namespace xlwrite
                         continue;
                     }
 
-                    bool success = XlWriteUtilities.TryParseCellReference(field[0], out Cell cell);
-                    if (!success)
+                    if (!XlWriteUtilities.TryParseCellReference(field[0], out Cell? cell))
                     {
                         Console.Error.Write($"Could not parse cell reference {field[0]}.\n");
                         continue;
                     }
 
-                    ExcelWorksheet sheet = XlWriteUtilities.SheetFromCell(package, cell);
+                    ExcelWorksheet sheet = XlWriteUtilities.SheetFromCell(package, cell, createWorksheetIfRequired);
 
                     sheet.Cells[cell.Row, cell.Column].Value = GetValue(field[1]);
 
@@ -189,7 +194,7 @@ namespace xlwrite
         {
             if (double.TryParse(data, out double numericValue)) return numericValue;
             // This is to prevent fractions like 1/6 from being converted to dates.
-            if (data != null && data.Length > 8 && DateTime.TryParse(data, out DateTime dateTime)) return dateTime;
+            if (data.Length > 8 && DateTime.TryParse(data, out DateTime dateTime)) return dateTime;
             return data;
         }
 
@@ -240,7 +245,10 @@ namespace xlwrite
 
     public class Cell
     {
-        public string SheetName;
+        public string? SheetName;
+        /// <summary>
+        /// 1-based Worksheet number index
+        /// </summary>
         public int SheetNum;
         public int Row;
         public int Column;
@@ -248,7 +256,7 @@ namespace xlwrite
 
     public static class XlWriteUtilities
     {
-        public static bool TryParseCellReference(string cellReference, out Cell cellLocation)
+        public static bool TryParseCellReference(string cellReference, [NotNullWhen(returnValue:true)] out Cell? cellLocation)
         {
             string worksheetNamePattern = @"'[^:\\/?*[\]]{1,31}'!";
             string worksheetNumberPattern = @"[1-9]\d*!";
@@ -285,29 +293,26 @@ namespace xlwrite
             }
         }
 
-        public static ExcelWorksheet SheetFromCell(ExcelPackage package, Cell cell)
+        public static ExcelWorksheet SheetFromCell(ExcelPackage package, Cell cell, bool createSheetIfRequired)
         {
-            ExcelWorkbook workbook = package.Workbook;
+            ExcelWorksheets sheets = package.Workbook.Worksheets;
+            bool sheetSpecified = cell.SheetNum > 0 || cell.SheetName != null;
+            if (sheetSpecified)
+            {
+                if (cell.SheetName != null)
+                {
+                    List<ExcelWorksheet> matchingSheets = sheets.Where(s => s.Name == cell.SheetName).ToList();
+                    if (matchingSheets.Any()) return matchingSheets.First();
+                    if (createSheetIfRequired) return sheets.Add(cell.SheetName);
+                    throw new InvalidOperationException($"Could not find sheet named '{cell.SheetName}' in file '{package.File.FullName}'.");
+                }
 
-            if (workbook.Worksheets.Count == 0)
-            {
-                throw new InvalidOperationException($"There are no worksheets in file.");
+                if (cell.SheetNum <= sheets.Count) return sheets[cell.SheetNum - 1];
+
+                throw new InvalidOperationException($"Specified sheet index {cell.SheetNum}' but only {package.Workbook.Worksheets.Count} sheets exist in file '{package.File.FullName}'.");
             }
 
-            if (cell.SheetNum > -1)
-            {
-                return workbook.Worksheets[cell.SheetNum - 1];
-            }
-            else if (cell.SheetName != null)
-            {
-                var matchingSheets = workbook.Worksheets.Where(s => s.Name == cell.SheetName).ToList();
-                if (!matchingSheets.Any()) throw new InvalidOperationException($"Could not find sheet named '{cell.SheetName}' in file '{package.File.FullName}'.");
-                return matchingSheets.First();
-            }
-            else
-            {
-                return workbook.Worksheets.First();
-            }
+            return sheets.Any() ? sheets.First() : sheets.Add("Sheet 1");
         }
     }
 
