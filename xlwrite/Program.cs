@@ -209,11 +209,11 @@ namespace xlwrite
             StringBuilder helpText = new StringBuilder();
 
             const int padding = -12;
+            const int optionPadding = -15;
 
             helpText.AppendLine("USAGE:");
-            helpText.AppendLine("    xlwrite block STARTCELL DATAFILE EXCELFILE");
-            helpText.AppendLine("    xlwrite ind DATAFILE EXCELFILE");
-            helpText.AppendLine("    xlwrite [-h | --help]");
+            helpText.AppendLine("    xlwrite [OPTION].. block STARTCELL DATAFILE EXCELFILE");
+            helpText.AppendLine("    xlwrite [OPTION].. ind DATAFILE EXCELFILE");
             helpText.AppendLine();
             helpText.AppendLine("ARGS:");
             helpText.AppendLine($"    {"STARTCELL",padding}Upper left hand corner cell. Either A1 form or R1C1 form.");
@@ -221,7 +221,9 @@ namespace xlwrite
             helpText.AppendLine($"    {"EXCELFILE",padding}Excel file to insert data into. If file doesn't exist, a new file is created.");
             helpText.AppendLine();
             helpText.AppendLine("OPTIONS:");
-            helpText.AppendLine($"    {"-h, --help",padding}Print this help information and exit.");
+            helpText.AppendLine($"    {"-c, --create",optionPadding}Create specified worksheet if required.");
+            helpText.AppendLine($"    {"-h, --help",optionPadding}Print this help information and exit.");
+            helpText.AppendLine($"    {"-v, --version",optionPadding}Print version information and exit.");
             helpText.AppendLine();
             helpText.AppendLine("EXAMPLES:");
             helpText.AppendLine("Simple block usage:");
