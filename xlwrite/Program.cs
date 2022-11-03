@@ -13,6 +13,9 @@ namespace xlwrite
     {
         static int Main(string[] args)
         {
+            // This executable is free and open source, and is non-commercial.
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
             if (args.Length == 0)
             {
                 Console.Error.Write("No arguments found. See help below.\n");
@@ -34,52 +37,66 @@ namespace xlwrite
 
             int argIndex = 0;
             bool createWorksheetIfRequired = false;
+            bool autofitColumns = false;
 
-            if (args[argIndex] == "-c" || args[argIndex] == "--create")
+            while (argIndex < args.Length)
             {
-                createWorksheetIfRequired = true;
-                argIndex++;
-            }
-
-            string command = args[argIndex];
-            if (string.Equals(command, "block"))
-            {
-                if (args.Length - argIndex < 4)
+                if (args[argIndex] == "-c" || args[argIndex] == "--create")
                 {
-                    Console.Error.Write("Not enough arguments for block.\n");
-                    Console.Error.Write("\n");
-                    Console.Error.Write(HelpText());
+                    createWorksheetIfRequired = true;
+                    argIndex++;
+                }
+                else if (args[argIndex] == "-a" || args[argIndex] == "--autofit")
+                {
+                    autofitColumns = true;
+                    argIndex++;
+                }
+                else
+                {
+                    string command = args[argIndex];
+                    if (string.Equals(command, "block"))
+                    {
+                        if (args.Length - argIndex < 4)
+                        {
+                            Console.Error.Write("Not enough arguments for block.\n");
+                            Console.Error.Write("\n");
+                            Console.Error.Write(HelpText());
+                            return 1;
+                        }
+
+                        string blockResults = BlockWrite(args[argIndex + 1], args[argIndex + 2], args[argIndex + 3], createWorksheetIfRequired, autofitColumns);
+                        if (string.IsNullOrWhiteSpace(blockResults)) return 0;
+                        Console.Error.WriteLine(blockResults);
+                        return 1;
+
+                    }
+
+                    if (string.Equals(command, "ind"))
+                    {
+                        if (args.Length - argIndex < 3)
+                        {
+                            Console.Error.Write("Not enough arguments for ind.\n\n");
+                            Console.Error.Write(HelpText());
+                            return 1;
+                        }
+
+                        string indResults = IndWrite(args[argIndex + 1], args[argIndex + 2], createWorksheetIfRequired);
+                        if (string.IsNullOrWhiteSpace(indResults)) return 0;
+                        Console.Error.Write(indResults.EndWithNewline());
+                        return 1;
+                    }
+
+                    Console.Error.WriteLine($"Unknown sub command {command}. Please review help.\n");
+                    Console.Error.WriteLine(HelpText());
                     return 1;
                 }
-
-                string blockResults = BlockWrite(args[argIndex + 1], args[argIndex + 2], args[argIndex + 3], createWorksheetIfRequired);
-                if (string.IsNullOrWhiteSpace(blockResults)) return 0;
-                Console.Error.WriteLine(blockResults);
-                return 1;
-
             }
 
-            if (string.Equals(command, "ind"))
-            {
-                if (args.Length - argIndex < 3)
-                {
-                    Console.Error.Write("Not enough arguments for ind.\n\n");
-                    Console.Error.Write(HelpText());
-                    return 1;
-                }
-
-                string indResults = IndWrite(args[argIndex + 1], args[argIndex + 2], createWorksheetIfRequired);
-                if (string.IsNullOrWhiteSpace(indResults)) return 0;
-                Console.Error.Write(indResults.EndWithNewline());
-                return 1;
-            }
-
-            Console.Error.WriteLine($"Unknown sub command {command}. Please review help.\n");
-            Console.Error.WriteLine(HelpText());
-            return 1;
+            // Shouldn't get here.
+            return 0;
         }
 
-        public static string BlockWrite(string cellReference, string dataFilename, string filename, bool createWorksheetIfRequired)
+        public static string BlockWrite(string cellReference, string dataFilename, string filename, bool createWorksheetIfRequired, bool autoFitColumns)
         {
             if (!XlWriteUtilities.TryParseCellReference(cellReference, out Cell? startCellLocation)) return $"Could not parse the cell reference {cellReference}.";
 
@@ -137,10 +154,14 @@ namespace xlwrite
 
                 ExcelWorksheet sheet = XlWriteUtilities.SheetFromCell(package, startCellLocation, createWorksheetIfRequired);
 
+                HashSet<int> columnsUsed = new HashSet<int>();
                 foreach ((Cell cell, string value) in cells)
                 {
                     sheet.Cells[cell.Row, cell.Column].Value = GetValue(value);
+                    columnsUsed.Add(cell.Column);
                 }
+
+                if (autoFitColumns) foreach (var colNum in columnsUsed) sheet.Column(colNum).AutoFit();
                 package.Save();
             }
             catch (Exception exception)
