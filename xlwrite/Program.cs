@@ -20,9 +20,15 @@ namespace xlwrite
                 return 1;
             }
 
-            if (args.Any(arg => string.Equals("-h", arg) || string.Equals("--help", arg)))
+            if (args.Any(s => s is "-h" or "--help"))
             {
                 Console.Write(HelpText());
+                return 0;
+            }
+
+            if (args.Any(s => s is "-v" or "--version"))
+            {
+                Console.Write("0.3.0\n");
                 return 0;
             }
 
