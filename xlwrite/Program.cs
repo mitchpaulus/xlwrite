@@ -242,6 +242,7 @@ namespace xlwrite
             helpText.AppendLine($"    {"EXCELFILE",padding}Excel file to insert data into. If file doesn't exist, a new file is created.");
             helpText.AppendLine();
             helpText.AppendLine("OPTIONS:");
+            helpText.AppendLine($"    {"-a, --autofit",optionPadding}Auto fit columns for which data has been entered. (Only 'block' mode currently).");
             helpText.AppendLine($"    {"-c, --create",optionPadding}Create specified worksheet if required.");
             helpText.AppendLine($"    {"-h, --help",optionPadding}Print this help information and exit.");
             helpText.AppendLine($"    {"-v, --version",optionPadding}Print version information and exit.");
