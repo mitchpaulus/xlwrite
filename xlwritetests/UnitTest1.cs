@@ -50,7 +50,7 @@ namespace Tests
         public void RegexTests()
         {
             string test = "]";
-            Regex regex = new Regex(@"[\]]");
+            Regex regex = new(@"[\]]");
             Assert.IsTrue(regex.Match(test).Success);
         }
 
