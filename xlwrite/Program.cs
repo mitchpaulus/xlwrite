@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using OfficeOpenXml;
+using OfficeOpenXml.Style;
 
 namespace xlwrite
 {
@@ -38,6 +40,7 @@ namespace xlwrite
             int argIndex = 0;
             bool createWorksheetIfRequired = false;
             bool autofitColumns = false;
+            bool style = false;
 
             while (argIndex < args.Length)
             {
@@ -50,6 +53,10 @@ namespace xlwrite
                 {
                     autofitColumns = true;
                     argIndex++;
+                }
+                else if (args[argIndex] == "--style")
+                {
+                    style = true; argIndex++;
                 }
                 else
                 {
@@ -64,7 +71,7 @@ namespace xlwrite
                             return 1;
                         }
 
-                        string blockResults = BlockWrite(args[argIndex + 1], args[argIndex + 2], args[argIndex + 3], createWorksheetIfRequired, autofitColumns);
+                        string blockResults = BlockWrite(args[argIndex + 1], args[argIndex + 2], args[argIndex + 3], createWorksheetIfRequired, autofitColumns, style);
                         if (string.IsNullOrWhiteSpace(blockResults)) return 0;
                         Console.Error.WriteLine(blockResults);
                         return 1;
@@ -96,7 +103,7 @@ namespace xlwrite
             return 0;
         }
 
-        public static string BlockWrite(string cellReference, string dataFilename, string filename, bool createWorksheetIfRequired, bool autoFitColumns)
+        public static string BlockWrite(string cellReference, string dataFilename, string filename, bool createWorksheetIfRequired, bool autoFitColumns, bool style)
         {
             if (!XlWriteUtilities.TryParseCellReference(cellReference, out Cell? startCellLocation)) return $"Could not parse the cell reference {cellReference}.";
 
@@ -150,8 +157,6 @@ namespace xlwrite
                 FileInfo excelFile = new FileInfo(Path.Combine(Environment.CurrentDirectory, filename));
                 ExcelPackage package = new ExcelPackage(excelFile);
 
-                // if (!excelFile.Exists) package.Workbook.Worksheets.Add("Sheet 1");
-
                 ExcelWorksheet sheet = XlWriteUtilities.SheetFromCell(package, startCellLocation, createWorksheetIfRequired);
 
                 HashSet<int> columnsUsed = new HashSet<int>();
@@ -159,6 +164,46 @@ namespace xlwrite
                 {
                     sheet.Cells[cell.Row, cell.Column].Value = GetValue(value);
                     columnsUsed.Add(cell.Column);
+                }
+
+                if (style)
+                {
+                    if (cells.Any())
+                    {
+                        var headerRow = cells.Min(c => c.cell.Row);
+                        int startColumn = cells.Min(c => c.cell.Column);
+                        int endRow = cells.Max(c => c.cell.Row);
+                        int endColumn = cells.Max(c => c.cell.Column);
+
+                        for (var row = headerRow; row <= endRow; row++)
+                        {
+                            for (var column = startColumn; column <= endColumn; column++)
+                            {
+                                sheet.Cells[row, column].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
+                                // Temporary hack just for me.
+                                if (column != startColumn) sheet.Cells[row, column].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                            }
+                        }
+
+                        // Loop over header cells, make them bold, white text, CCLLC blue background
+                        for (var column = startColumn; column <= endColumn; column++)
+                        {
+                            var excelStyle = sheet.Cells[headerRow, column].Style;
+                            excelStyle.Font.Bold = true;
+                            excelStyle.Font.Color.SetColor(Color.White);
+                            excelStyle.Fill.PatternType = ExcelFillStyle.Solid;
+                            excelStyle.Fill.BackgroundColor.SetColor(Color.FromArgb(0, 73, 135));
+                            excelStyle.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        }
+                    }
+
+                    sheet.PrinterSettings.FitToPage = true;
+                    sheet.PrinterSettings.FitToWidth = 1;
+                    sheet.PrinterSettings.FitToHeight = 0;
+                    sheet.PrinterSettings.Orientation = eOrientation.Landscape;
+                    sheet.HeaderFooter.OddFooter.CenteredText = sheet.Name;
+                    sheet.HeaderFooter.ScaleWithDocument = false;
                 }
 
                 if (autoFitColumns) foreach (var colNum in columnsUsed) sheet.Column(colNum).AutoFit();
