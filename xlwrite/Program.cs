@@ -33,7 +33,7 @@ class Program
 
         if (args.Any(s => s is "-v" or "--version"))
         {
-            Console.Write("0.3.0\n");
+            Console.Write("0.4.0\n");
             return 0;
         }
 
