@@ -117,7 +117,7 @@ class Program
         {
             if (dataFilename == "-")
             {
-                li = new();
+                li = new List<string>();
                 using TextReader reader = Console.In;
                 while (reader.ReadLine() is { } text)
                 {
@@ -145,7 +145,7 @@ class Program
             int fieldIndex = 0;
             foreach (string field in fields)
             {
-                cells.Add((new() { Row = startCellLocation.Row + index, Column = startCellLocation.Column + fieldIndex }, field));
+                cells.Add((new Cell { Row = startCellLocation.Row + index, Column = startCellLocation.Column + fieldIndex }, field));
                 fieldIndex++;
             }
             index++;
@@ -168,14 +168,14 @@ class Program
             {
                 if (cells.Any())
                 {
-                    var headerRow = cells.Min(c => c.cell.Row);
+                    int headerRow = cells.Min(c => c.cell.Row);
                     int startColumn = cells.Min(c => c.cell.Column);
                     int endRow = cells.Max(c => c.cell.Row);
                     int endColumn = cells.Max(c => c.cell.Column);
 
-                    for (var row = headerRow; row <= endRow; row++)
+                    for (int row = headerRow; row <= endRow; row++)
                     {
-                        for (var column = startColumn; column <= endColumn; column++)
+                        for (int column = startColumn; column <= endColumn; column++)
                         {
                             sheet.Cells[row, column].Style.Border.BorderAround(ExcelBorderStyle.Thin);
 
@@ -185,9 +185,9 @@ class Program
                     }
 
                     // Loop over header cells, make them bold, white text, CCLLC blue background
-                    for (var column = startColumn; column <= endColumn; column++)
+                    for (int column = startColumn; column <= endColumn; column++)
                     {
-                        var excelStyle = sheet.Cells[headerRow, column].Style;
+                        ExcelStyle? excelStyle = sheet.Cells[headerRow, column].Style;
                         excelStyle.Font.Bold = true;
                         excelStyle.Font.Color.SetColor(Color.White);
                         excelStyle.Fill.PatternType = ExcelFillStyle.Solid;
@@ -204,7 +204,7 @@ class Program
                 sheet.HeaderFooter.ScaleWithDocument = false;
             }
 
-            if (autoFitColumns) foreach (var colNum in columnsUsed) sheet.Column(colNum).AutoFit();
+            if (autoFitColumns) foreach (int colNum in columnsUsed) sheet.Column(colNum).AutoFit();
             package.Save();
         }
         catch (Exception exception)
@@ -220,7 +220,7 @@ class Program
 
     public static string IndWrite(string dataFilename, string filename, bool createWorksheetIfRequired)
     {
-        var checkFiles = new List<string> { dataFilename, filename }.Select(s => new FileInfo(Path.Combine(Environment.CurrentDirectory, s))).ToList();
+        List<FileInfo> checkFiles = new List<string> { dataFilename, filename }.Select(s => new FileInfo(Path.Combine(Environment.CurrentDirectory, s))).ToList();
         if (checkFiles.Any(info => !info.Exists)) return $"Could not find file {checkFiles.First(info => !info.Exists)}.";
 
         try
@@ -274,7 +274,8 @@ class Program
 
         const int padding = -12;
         const int optionPadding = -15;
-
+        
+        // ReSharper disable StringLiteralTypo
         helpText.AppendLine("USAGE:");
         helpText.AppendLine("    xlwrite [OPTION].. block STARTCELL DATAFILE EXCELFILE");
         helpText.AppendLine("    xlwrite [OPTION].. ind DATAFILE EXCELFILE");
@@ -310,6 +311,7 @@ class Program
         helpText.AppendLine("Note that you will likely need some shell quoting to get the apostrophes through.");
         helpText.AppendLine();
         helpText.AppendLine("xlwrite block \"'Sheet 2'!B2\" data.txt excel.xlsx");
+        // ReSharper restore StringLiteralTypo
 
 
         return helpText.ToString();
@@ -334,17 +336,17 @@ public static class XlWriteUtilities
         string worksheetNamePattern = @"'[^:\\/?*[\]]{1,31}'!";
         string worksheetNumberPattern = @"[1-9]\d*!";
         Regex a1Regex = new($@"^(({worksheetNumberPattern})|({worksheetNamePattern}))?([A-Za-z]+)([0-9]+)$");
-        Regex r1c1Regex = new("^[rR]([0-9]+)[cC]([0-9]+)$");
+        Regex rowColRegex = new("^[rR]([0-9]+)[cC]([0-9]+)$");
 
-        var a1Match = a1Regex.Match(cellReference);
-        var r1c1Match = r1c1Regex.Match(cellReference);
+        Match a1Match = a1Regex.Match(cellReference);
+        Match rowColMatch = rowColRegex.Match(cellReference);
 
         if (a1Match.Success)
         {
-            cellLocation = new()
+            cellLocation = new Cell
             {
-                // The 1 is to skip the first quote, and the -3 on the length is for the two quotes and exclamation point.
-                SheetName = a1Match.Groups[3].Success ? a1Match.Groups[3].Value.Substring(1, a1Match.Groups[3].Value.Length - 3) : null,
+                // The 1 is to skip the first quote, and the -2 on the length is for the quote and exclamation point.
+                SheetName = a1Match.Groups[3].Success ? a1Match.Groups[3].Value[1..^2] : null,
                 // The ^1 is to remove the ! at the end of the pattern.
                 SheetNum = a1Match.Groups[2].Success ? int.Parse(a1Match.Groups[2].Value[..^1]) : -1,
                 Row = int.Parse(a1Match.Groups[5].Value),
@@ -352,42 +354,40 @@ public static class XlWriteUtilities
             };
             return true;
         }
-        else if (r1c1Match.Success)
+
+        if (rowColMatch.Success)
         {
-            cellLocation = new()
+            cellLocation = new Cell
             {
-                Row = int.Parse(r1c1Match.Groups[1].Value),
-                Column = int.Parse(r1c1Match.Groups[2].Value)
+                Row = int.Parse(rowColMatch.Groups[1].Value),
+                Column = int.Parse(rowColMatch.Groups[2].Value)
             };
             return true;
         }
-        else
-        {
-            cellLocation = null;
-            return false;
-        }
+
+        cellLocation = null;
+        return false;
     }
 
     public static ExcelWorksheet SheetFromCell(ExcelPackage package, Cell cell, bool createSheetIfRequired)
     {
         ExcelWorksheets sheets = package.Workbook.Worksheets;
         bool sheetSpecified = cell.SheetNum > 0 || cell.SheetName != null;
-        if (sheetSpecified)
+
+        if (!sheetSpecified) return sheets.Any() ? sheets.First() : sheets.Add("Sheet 1");
+
+        if (cell.SheetName != null)
         {
-            if (cell.SheetName != null)
-            {
-                List<ExcelWorksheet> matchingSheets = sheets.Where(s => s.Name == cell.SheetName).ToList();
-                if (matchingSheets.Any()) return matchingSheets.First();
-                if (createSheetIfRequired) return sheets.Add(cell.SheetName);
-                throw new InvalidOperationException($"Could not find sheet named '{cell.SheetName}' in file '{package.File.FullName}'.");
-            }
-
-            if (cell.SheetNum <= sheets.Count) return sheets[cell.SheetNum - 1];
-
-            throw new InvalidOperationException($"Specified sheet index {cell.SheetNum}' but only {package.Workbook.Worksheets.Count} sheets exist in file '{package.File.FullName}'.");
+            List<ExcelWorksheet> matchingSheets = sheets.Where(s => s.Name == cell.SheetName).ToList();
+            if (matchingSheets.Any()) return matchingSheets.First();
+            if (createSheetIfRequired) return sheets.Add(cell.SheetName);
+            throw new InvalidOperationException($"Could not find sheet named '{cell.SheetName}' in file '{package.File.FullName}'.");
         }
 
-        return sheets.Any() ? sheets.First() : sheets.Add("Sheet 1");
+        if (cell.SheetNum <= sheets.Count) return sheets[cell.SheetNum - 1];
+
+        throw new InvalidOperationException($"Specified sheet index {cell.SheetNum}' but only {package.Workbook.Worksheets.Count} sheets exist in file '{package.File.FullName}'.");
+
     }
 }
 
