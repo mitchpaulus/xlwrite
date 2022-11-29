@@ -91,14 +91,53 @@ class Program
                     return 1;
                 }
 
-                Console.Error.WriteLine($"Unknown sub command {command}. Please review help.\n");
-                Console.Error.WriteLine(HelpText());
+                if (string.Equals(command, "1pagewidth"))
+                {
+                    // Read remaining arguments as files
+                    if (args.Length - argIndex < 2)
+                    {
+                        Console.Error.Write("Not enough arguments for 1pagewidth.\n\n");
+                        Console.Error.Write(HelpText());
+                        return 1;
+                    }
+
+                    var files = args.Skip(argIndex + 1).ToArray();
+
+                    foreach (var file in files)
+                    {
+                        try
+                        {
+                            SetPageWidth(file);
+                        }
+                        catch
+                        {
+                            Console.Error.Write($"There was an exception modifying the file '{file}'");
+                            return 1;
+                        }
+                    }
+
+                    return 0;
+                }
+
+                Console.Error.Write($"Unknown sub command {command}. Please review help.\n");
+                Console.Error.Write(HelpText());
                 return 1;
             }
         }
 
         // Shouldn't get here.
         return 0;
+    }
+
+    public static void SetPageWidth(string filePath)
+    {
+        ExcelPackage package = new ExcelPackage(filePath);
+        foreach (var sheet in package.Workbook.Worksheets)
+        {
+            sheet.PrinterSettings.FitToPage = true;
+            sheet.PrinterSettings.FitToWidth = 1;
+        }
+        package.Save();
     }
 
     public static string BlockWrite(string cellReference, string dataFilename, string filename, bool createWorksheetIfRequired, bool autoFitColumns, bool style)
@@ -274,7 +313,7 @@ class Program
 
         const int padding = -12;
         const int optionPadding = -15;
-        
+
         // ReSharper disable StringLiteralTypo
         helpText.AppendLine("USAGE:");
         helpText.AppendLine("    xlwrite [OPTION].. block STARTCELL DATAFILE EXCELFILE");
