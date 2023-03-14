@@ -33,7 +33,7 @@ class Program
 
         if (args.Any(s => s is "-v" or "--version"))
         {
-            Console.Write("0.4.0\n");
+            Console.Write("0.6.0\n");
             return 0;
         }
 
@@ -44,7 +44,7 @@ class Program
         bool onePageWidth = false;
         bool onePageHeight = true;
         bool landscape = false;
-        bool wipe = false; 
+        bool wipe = false;
         string? worksheet = null;
 
         while (argIndex < args.Length)
@@ -220,8 +220,8 @@ class Program
 
             ExcelPackage package = new(excelFile);
 
-            ExcelWorksheet sheet = string.IsNullOrWhiteSpace(worksheet) 
-                ? XlWriteUtilities.SheetFromCell(package, startCellLocation, createWorksheetIfRequired) 
+            ExcelWorksheet sheet = string.IsNullOrWhiteSpace(worksheet)
+                ? XlWriteUtilities.SheetFromCell(package, startCellLocation, createWorksheetIfRequired)
                 : XlWriteUtilities.SheetFromName(package, worksheet, createWorksheetIfRequired);
 
             HashSet<int> columnsUsed = new();
