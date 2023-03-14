@@ -41,20 +41,52 @@ class Program
         bool createWorksheetIfRequired = false;
         bool autofitColumns = false;
         bool style = false;
+        bool onePageWidth = false;
+        bool onePageHeight = true;
+        bool landscape = false;
+        bool wipe = false; 
+        string? worksheet = null;
 
         while (argIndex < args.Length)
         {
-            if (args[argIndex] == "-c" || args[argIndex] == "--create")
+            var arg = args[argIndex];
+            if (arg is "-c" or "--create")
             {
                 createWorksheetIfRequired = true; argIndex++;
             }
-            else if (args[argIndex] == "-a" || args[argIndex] == "--autofit")
+            else if (args[argIndex] == "-a" || args[argIndex] == "--autofit" || args[argIndex] == "--auto-fit")
             {
                 autofitColumns = true; argIndex++;
             }
             else if (args[argIndex] == "--style")
             {
                 style = true; argIndex++;
+            }
+            else if (arg is "-w" or "--worksheet" or "--sheet")
+            {
+                if (argIndex + 1 >= args.Length)
+                {
+                    Console.Error.Write($"No sheet given to option {arg}.\n\n");
+                    return 1;
+                }
+                worksheet = args[argIndex + 1];
+                argIndex += 2;
+            }
+            else if (arg is "--1-page-width" or "--1pagewidth")
+            {
+                onePageWidth = true; argIndex++;
+            }
+            else if (arg is "--1-page-height" or "--1pageheight")
+            {
+                onePageHeight = true; argIndex++;
+            }
+            else if (arg is "--landscape")
+            {
+                landscape = true; argIndex++;
+            }
+            else if (arg is "--wipe")
+            {
+                wipe = true; argIndex++;
             }
             else
             {
@@ -69,11 +101,16 @@ class Program
                         return 1;
                     }
 
-                    string blockResults = BlockWrite(args[argIndex + 1], args[argIndex + 2], args[argIndex + 3], createWorksheetIfRequired, autofitColumns, style);
+                    string cellReference = args[argIndex + 1];
+                    string dataFilename = args[argIndex + 2];
+                    string excelFilename = args[argIndex + 3];
+                    string blockResults = BlockWrite(cellReference, dataFilename, excelFilename, createWorksheetIfRequired, autofitColumns, style, worksheet, wipe);
+
+                    SetPageWidth(excelFilename, onePageWidth, onePageHeight, landscape);
+
                     if (string.IsNullOrWhiteSpace(blockResults)) return 0;
                     Console.Error.WriteLine(blockResults);
                     return 1;
-
                 }
 
                 if (string.Equals(command, "ind"))
@@ -85,38 +122,15 @@ class Program
                         return 1;
                     }
 
-                    string indResults = IndWrite(args[argIndex + 1], args[argIndex + 2], createWorksheetIfRequired);
+                    string dataFilename = args[argIndex + 1];
+                    string excelFilename = args[argIndex + 2];
+                    string indResults = IndWrite(dataFilename, excelFilename, createWorksheetIfRequired, wipe);
+
+                    SetPageWidth(excelFilename, onePageWidth, onePageHeight, landscape);
+
                     if (string.IsNullOrWhiteSpace(indResults)) return 0;
                     Console.Error.Write(indResults.EndWithNewline());
                     return 1;
-                }
-
-                if (string.Equals(command, "1pagewidth"))
-                {
-                    // Read remaining arguments as files
-                    if (args.Length - argIndex < 2)
-                    {
-                        Console.Error.Write("Not enough arguments for 1pagewidth.\n\n");
-                        Console.Error.Write(HelpText());
-                        return 1;
-                    }
-
-                    var files = args.Skip(argIndex + 1).ToArray();
-
-                    foreach (var file in files)
-                    {
-                        try
-                        {
-                            SetPageWidth(file);
-                        }
-                        catch
-                        {
-                            Console.Error.Write($"There was an exception modifying the file '{file}'");
-                            return 1;
-                        }
-                    }
-
-                    return 0;
                 }
 
                 Console.Error.Write($"Unknown sub command {command}. Please review help.\n");
@@ -129,18 +143,23 @@ class Program
         return 0;
     }
 
-    public static void SetPageWidth(string filePath)
+    public static void SetPageWidth(string filePath, bool fitToWidth, bool fitToHeight, bool landscape)
     {
+        if (!fitToHeight && !fitToHeight) return;
+
         ExcelPackage package = new ExcelPackage(filePath);
         foreach (var sheet in package.Workbook.Worksheets)
         {
             sheet.PrinterSettings.FitToPage = true;
-            sheet.PrinterSettings.FitToWidth = 1;
+            if (fitToWidth) sheet.PrinterSettings.FitToWidth = 1;
+            if (fitToHeight) sheet.PrinterSettings.FitToHeight = 1;
+            if (landscape) sheet.PrinterSettings.Orientation = eOrientation.Landscape;
+
         }
         package.Save();
     }
 
-    public static string BlockWrite(string cellReference, string dataFilename, string filename, bool createWorksheetIfRequired, bool autoFitColumns, bool style)
+    public static string BlockWrite(string cellReference, string dataFilename, string filename, bool createWorksheetIfRequired, bool autoFitColumns, bool style, string? worksheet, bool wipe)
     {
         if (!XlWriteUtilities.TryParseCellReference(cellReference, out Cell? startCellLocation)) return $"Could not parse the cell reference {cellReference}.";
 
@@ -192,9 +211,18 @@ class Program
         try
         {
             FileInfo excelFile = new(Path.Combine(Environment.CurrentDirectory, filename));
+
+            if (wipe)
+            {
+                try { File.Delete(excelFile.FullName); }
+                catch { return $"Could not delete file '{excelFile.FullName}'"; }
+            }
+
             ExcelPackage package = new(excelFile);
 
-            ExcelWorksheet sheet = XlWriteUtilities.SheetFromCell(package, startCellLocation, createWorksheetIfRequired);
+            ExcelWorksheet sheet = string.IsNullOrWhiteSpace(worksheet) 
+                ? XlWriteUtilities.SheetFromCell(package, startCellLocation, createWorksheetIfRequired) 
+                : XlWriteUtilities.SheetFromName(package, worksheet, createWorksheetIfRequired);
 
             HashSet<int> columnsUsed = new();
             foreach ((Cell cell, string value) in cells)
@@ -217,9 +245,6 @@ class Program
                         for (int column = startColumn; column <= endColumn; column++)
                         {
                             sheet.Cells[row, column].Style.Border.BorderAround(ExcelBorderStyle.Thin);
-
-                            // Temporary hack just for me.
-                            if (column != startColumn) sheet.Cells[row, column].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                         }
                     }
 
@@ -257,7 +282,7 @@ class Program
         return "";
     }
 
-    public static string IndWrite(string dataFilename, string filename, bool createWorksheetIfRequired)
+    public static string IndWrite(string dataFilename, string filename, bool createWorksheetIfRequired, bool wipe)
     {
         List<FileInfo> checkFiles = new List<string> { dataFilename, filename }.Select(s => new FileInfo(Path.Combine(Environment.CurrentDirectory, s))).ToList();
         if (checkFiles.Any(info => !info.Exists)) return $"Could not find file {checkFiles.First(info => !info.Exists)}.";
@@ -266,7 +291,16 @@ class Program
         {
             IEnumerable<string[]> lines = File.ReadLines(checkFiles[0].FullName, Encoding.UTF8).Select(s => s.Split('\t'));
 
-            ExcelPackage package = new(checkFiles[1]);
+
+            FileInfo excelFile = checkFiles[1];
+            if (wipe)
+            {
+                try { File.Delete(excelFile.FullName); }
+                catch { return $"Could not delete file '{excelFile.FullName}'"; }
+            }
+
+            ExcelPackage package = new(excelFile);
+
             int lineNumber = 1;
             foreach (string[] field in lines)
             {
@@ -328,6 +362,8 @@ class Program
         helpText.AppendLine($"    {"-a, --autofit",optionPadding}Auto fit columns for which data has been entered. (Only 'block' mode currently).");
         helpText.AppendLine($"    {"-c, --create",optionPadding}Create specified worksheet if required.");
         helpText.AppendLine($"    {"-h, --help",optionPadding}Print this help information and exit.");
+        helpText.AppendLine($"    {"-w, --sheet",optionPadding}Specify worksheet. Only affect block mode.");
+        helpText.AppendLine($"    {"    --wipe",optionPadding}Delete existing file before writing. Be careful!");
         helpText.AppendLine($"    {"-v, --version",optionPadding}Print version information and exit.");
         helpText.AppendLine();
         helpText.AppendLine("EXAMPLES:");
@@ -414,18 +450,22 @@ public static class XlWriteUtilities
         bool sheetSpecified = cell.SheetNum > 0 || cell.SheetName != null;
 
         if (!sheetSpecified) return sheets.Any() ? sheets.First() : sheets.Add("Sheet 1");
-
-        if (cell.SheetName != null)
-        {
-            List<ExcelWorksheet> matchingSheets = sheets.Where(s => s.Name == cell.SheetName).ToList();
-            if (matchingSheets.Any()) return matchingSheets.First();
-            if (createSheetIfRequired) return sheets.Add(cell.SheetName);
-            throw new InvalidOperationException($"Could not find sheet named '{cell.SheetName}' in file '{package.File.FullName}'.");
-        }
-
+        if (cell.SheetName != null) return SheetFromName(package, cell.SheetName, createSheetIfRequired);
         if (cell.SheetNum <= sheets.Count) return sheets[cell.SheetNum - 1];
 
         throw new InvalidOperationException($"Specified sheet index {cell.SheetNum}' but only {package.Workbook.Worksheets.Count} sheets exist in file '{package.File.FullName}'.");
+    }
+
+    public static ExcelWorksheet SheetFromName(ExcelPackage package, string name, bool createSheetIfRequired)
+    {
+        ExcelWorksheets sheets = package.Workbook.Worksheets;
+        ExcelWorksheet? matchingSheet = sheets.FirstOrDefault(s => s.Name == name);
+        if (matchingSheet is not null) return matchingSheet;
+        if (createSheetIfRequired)
+        {
+            return sheets.Add(name.SanitizeExcelSheetName());
+        }
+        throw new InvalidOperationException($"Could not find sheet named '{name}' in file '{package.File.FullName}'.");
 
     }
 }
@@ -451,4 +491,44 @@ public static class StringExtensions
 
     // Check if string ends with Unix newline, if so, return it, else add newline
     public static string EndWithNewline(this string inputString) => inputString.EndsWith("\n") ? inputString : inputString + "\n";
+
+    public static string SanitizeExcelSheetName(this string inputSheetName)
+    {
+        //Replace invalid characters. https://www.accountingweb.com/technology/excel/seven-characters-you-cant-use-in-worksheet-names
+        inputSheetName = inputSheetName.Replace("/", " ");
+        inputSheetName = inputSheetName.Replace("\\", " ");
+        inputSheetName = inputSheetName.Replace("?", " ");
+        inputSheetName = inputSheetName.Replace("*", " ");
+        inputSheetName = inputSheetName.Replace("[", " ");
+        inputSheetName = inputSheetName.Replace("]", " ");
+        inputSheetName = inputSheetName.Replace(":", " ");
+
+        // Excel sheet names cannot be the word "history".
+        if (inputSheetName.ToLower() == "history")
+        {
+            Random random = new Random();
+            inputSheetName += "_" + random.Next(1, 1000);
+        }
+
+        return inputSheetName.Truncate(31, "..");  // Excel has a limit of 31 characters in sheet names. https://stackoverflow.com/questions/3681868/is-there-a-limit-on-an-excel-worksheets-name-length
+    }
+
+    /// <summary>
+    /// Truncates string to the first <paramref name="maxLength"/> characters. If characters are removed, then the <paramref name="append"/> string is appended.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="maxLength"></param>
+    /// <param name="append">What to append if characters are removed. Example: "..."</param>
+    /// <returns></returns>
+    public static string Truncate(this string value, int maxLength, string append = "")
+    {
+        if (append.Length > maxLength)
+            throw new Exception("Append string must not be greater than maxLength.");
+
+        // Pulled from https://stackoverflow.com/questions/2776673/how-do-i-truncate-a-net-string/2776720
+        if (string.IsNullOrEmpty(value)) return value;
+        return value.Length <= maxLength
+            ? value
+            : value[..(maxLength - append.Length)] + append;
+    }
 }
