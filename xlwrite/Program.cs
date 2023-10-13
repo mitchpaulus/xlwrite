@@ -45,6 +45,7 @@ class Program
         bool onePageHeight = true;
         bool landscape = false;
         bool wipe = false;
+        bool escape = false;
         string? worksheet = null;
 
         while (argIndex < args.Length)
@@ -61,6 +62,10 @@ class Program
             else if (args[argIndex] == "--style")
             {
                 style = true; argIndex++;
+            }
+            else if (args[argIndex] is "-e" or "--escape")
+            {
+                escape = true; argIndex++;
             }
             else if (arg is "-w" or "--worksheet" or "--sheet")
             {
@@ -104,7 +109,7 @@ class Program
                     string cellReference = args[argIndex + 1];
                     string dataFilename = args[argIndex + 2];
                     string excelFilename = args[argIndex + 3];
-                    string blockResults = BlockWrite(cellReference, dataFilename, excelFilename, createWorksheetIfRequired, autofitColumns, style, worksheet, wipe);
+                    string blockResults = BlockWrite(cellReference, dataFilename, excelFilename, createWorksheetIfRequired, autofitColumns, style, worksheet, wipe, escape);
 
                     SetPageWidth(excelFilename, onePageWidth, onePageHeight, landscape);
 
@@ -124,7 +129,7 @@ class Program
 
                     string dataFilename = args[argIndex + 1];
                     string excelFilename = args[argIndex + 2];
-                    string indResults = IndWrite(dataFilename, excelFilename, createWorksheetIfRequired, wipe);
+                    string indResults = IndWrite(dataFilename, excelFilename, createWorksheetIfRequired, wipe, escape);
 
                     SetPageWidth(excelFilename, onePageWidth, onePageHeight, landscape);
 
@@ -159,7 +164,7 @@ class Program
         package.Save();
     }
 
-    public static string BlockWrite(string cellReference, string dataFilename, string filename, bool createWorksheetIfRequired, bool autoFitColumns, bool style, string? worksheet, bool wipe)
+    public static string BlockWrite(string cellReference, string dataFilename, string filename, bool createWorksheetIfRequired, bool autoFitColumns, bool style, string? worksheet, bool wipe, bool escape)
     {
         if (!XlWriteUtilities.TryParseCellReference(cellReference, out Cell? startCellLocation)) return $"Could not parse the cell reference {cellReference}.";
 
@@ -225,10 +230,21 @@ class Program
                 : XlWriteUtilities.SheetFromName(package, worksheet, createWorksheetIfRequired);
 
             HashSet<int> columnsUsed = new();
-            foreach ((Cell cell, string value) in cells)
+            if (escape)
             {
-                sheet.Cells[cell.Row, cell.Column].Value = GetValue(value);
-                columnsUsed.Add(cell.Column);
+                foreach ((Cell cell, string value) in cells)
+                {
+                    sheet.Cells[cell.Row, cell.Column].Value = GetEscapedValue(value);
+                    columnsUsed.Add(cell.Column);
+                }
+            }
+            else
+            {
+                foreach ((Cell cell, string value) in cells)
+                {
+                    sheet.Cells[cell.Row, cell.Column].Value = GetValue(value);
+                    columnsUsed.Add(cell.Column);
+                }
             }
 
             if (style)
@@ -282,7 +298,7 @@ class Program
         return "";
     }
 
-    public static string IndWrite(string dataFilename, string filename, bool createWorksheetIfRequired, bool wipe)
+    public static string IndWrite(string dataFilename, string filename, bool createWorksheetIfRequired, bool wipe, bool escape)
     {
         List<FileInfo> checkFiles = new List<string> { dataFilename, filename }.Select(s => new FileInfo(Path.Combine(Environment.CurrentDirectory, s))).ToList();
         if (checkFiles.Any(info => !info.Exists)) return $"Could not find file {checkFiles.First(info => !info.Exists)}.";
@@ -318,7 +334,7 @@ class Program
 
                 ExcelWorksheet sheet = XlWriteUtilities.SheetFromCell(package, cell, createWorksheetIfRequired);
 
-                sheet.Cells[cell.Row, cell.Column].Value = GetValue(field[1]);
+                sheet.Cells[cell.Row, cell.Column].Value = escape ? GetEscapedValue(field[1]) : GetValue(field[1]);
 
                 lineNumber++;
             }
@@ -339,6 +355,14 @@ class Program
         // This is to prevent fractions like 1/6 from being converted to dates.
         if (data.Length > 8 && DateTime.TryParse(data, out DateTime dateTime)) return dateTime;
         return data;
+    }
+    
+    public static object GetEscapedValue(string data)
+    {
+        if (double.TryParse(data, out double numericValue)) return numericValue;
+        // This is to prevent fractions like 1/6 from being converted to dates.
+        if (data.Length > 8 && DateTime.TryParse(data, out DateTime dateTime)) return dateTime;
+        return data.ProcessEscapeSequences();
     }
 
     public static string HelpText()
@@ -361,6 +385,7 @@ class Program
         helpText.AppendLine("OPTIONS:");
         helpText.AppendLine($"    {"-a, --autofit",optionPadding}Auto fit columns for which data has been entered. (Only 'block' mode currently).");
         helpText.AppendLine($"    {"-c, --create",optionPadding}Create specified worksheet if required.");
+        helpText.AppendLine($"    {"-e, --escape",optionPadding}Process escape sequences '\\n' and '\\t'");
         helpText.AppendLine($"    {"-h, --help",optionPadding}Print this help information and exit.");
         helpText.AppendLine($"    {"-w, --sheet",optionPadding}Specify worksheet. Only affect block mode.");
         helpText.AppendLine($"    {"    --wipe",optionPadding}Delete existing file before writing. Be careful!");
@@ -530,5 +555,48 @@ public static class StringExtensions
         return value.Length <= maxLength
             ? value
             : value[..(maxLength - append.Length)] + append;
+    }
+    
+    public static string ProcessEscapeSequences(this string input)
+    {
+        if (input == null) throw new ArgumentNullException(nameof(input));
+
+        StringBuilder result = new(input.Length + 100);
+        bool escapeNext = false;
+
+        foreach (char c in input)
+        {
+            if (escapeNext)
+            {
+                switch (c)
+                {
+                    case 'n':
+                        result.Append('\n');
+                        break;
+                    case '\t':
+                        result.Append('\t');
+                        break;
+                    case '\\':
+                        result.Append('\\');
+                        break;
+                    default:
+                        result.Append('\\');
+                        result.Append(c);
+                        break;
+                }
+                escapeNext = false;
+            }
+            else if (c == '\\')
+            {
+                escapeNext = true;
+            }
+            else
+            {
+                result.Append(c);
+            }
+        }
+
+        if (escapeNext) result.Append('\\');
+        return result.ToString();
     }
 }
