@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.IO;
@@ -46,6 +47,7 @@ class Program
         bool landscape = false;
         bool wipe = false;
         bool escape = false;
+        bool debug = false;
         string? worksheet = null;
 
         while (argIndex < args.Length)
@@ -58,6 +60,10 @@ class Program
             else if (args[argIndex] == "-a" || args[argIndex] == "--autofit" || args[argIndex] == "--auto-fit")
             {
                 autofitColumns = true; argIndex++;
+            }
+            else if (args[argIndex] is "--debug")
+            {
+                debug = true; argIndex++;
             }
             else if (args[argIndex] == "--style")
             {
@@ -106,16 +112,101 @@ class Program
                         return 1;
                     }
 
-                    string cellReference = args[argIndex + 1];
-                    string dataFilename = args[argIndex + 2];
-                    string excelFilename = args[argIndex + 3];
-                    string blockResults = BlockWrite(cellReference, dataFilename, excelFilename, createWorksheetIfRequired, autofitColumns, style, worksheet, wipe, escape);
+
+                    int remainingArgCount = args.Length - argIndex;
+
+                    List<(string CellReference, string DataFilename, string? Worksheet)> cellDataFilenames = new();
+                    string excelFilename;
+
+                    if (args.Length - argIndex == 4)
+                    {
+                        string cellReference = args[argIndex + 1];
+                        string dataFilename = args[argIndex + 2];
+                        excelFilename = args[argIndex + 3];
+
+                        cellDataFilenames.Add((cellReference, dataFilename, worksheet));
+                    }
+                    else if (remainingArgCount < 4)
+                    {
+                        Console.Error.Write($"Not enough arguments passed after block command\n. There should be a minimum of 3 (datafile, cell, Excel file), received {remainingArgCount - 1}\n");
+                        return 1;
+                    }
+                    else if ((remainingArgCount - 2) % 3 == 0)
+                    {
+                        excelFilename = args[argIndex + 1];
+
+                        // Read remaining arguments in threes.
+                        for (int i = argIndex + 2; i < args.Length; i += 3)
+                        {
+                            string worksheetArg = args[i];
+                            string cellReference = args[i + 1];
+                            string dataFilename = args[i + 2];
+
+                            cellDataFilenames.Add((cellReference, dataFilename, worksheetArg));
+                        }
+                    }
+                    else
+                    {
+                        Console.Error.Write($"Expected a multiple of 3 number of arguments after the 'block' command and Excel file. Got {remainingArgCount - 2}.\n");
+                        return 1;
+                    }
+
+                    ExcelPackage package;
+                    try
+                    {
+                        FileInfo excelFile = new(Path.Combine(Environment.CurrentDirectory, excelFilename));
+
+                        if (wipe)
+                        {
+                            try
+                            {
+                                File.Delete(excelFile.FullName);
+                            }
+                            catch
+                            {
+                                Console.Error.Write($"Could not delete file '{excelFile.FullName}'");
+                                return 1;
+                            }
+                        }
+
+                        package = new(excelFile);
+                    }
+                    catch
+                    {
+                        Console.Error.Write($"Could not open Excel file: {excelFilename}\n");
+                        return 1;
+                    }
+
+                    // Loop over the cell and data file pairs.
+                    // The reason for this level of effort is that the actual saving of the file takes significant time,
+                    // so instead of looping over input files and saving on each individual write, you can specify them
+                    // all from the command line in one command, resulting in a single save.
+                    foreach ((string cellRef, string dataFile, string? sheet) in cellDataFilenames)
+                    {
+                        if (debug) Console.Error.Write($"Writing '{dataFile}' to '{sheet ?? ""}': {cellRef}\n");
+                        string blockResults = BlockWrite(cellRef, dataFile, package, createWorksheetIfRequired, autofitColumns, style, sheet, wipe, escape, debug);
+                        if (string.IsNullOrWhiteSpace(blockResults)) continue;
+
+                        Console.Error.Write(blockResults);
+                        return 1;
+                    }
+
+                    // Only save once at the end.
+                    if (debug)
+                    {
+                        Stopwatch watch = new();
+                        watch.Start();
+                        package.Save();
+                        watch.Stop();
+                        Console.Error.Write($"Saving file: {watch.ElapsedMilliseconds}ms\n");
+                    }
+                    else
+                    {
+                        package.Save();
+                    }
 
                     SetPageWidth(excelFilename, onePageWidth, onePageHeight, landscape);
-
-                    if (string.IsNullOrWhiteSpace(blockResults)) return 0;
-                    Console.Error.WriteLine(blockResults);
-                    return 1;
+                    return 0;
                 }
 
                 if (string.Equals(command, "ind"))
@@ -164,8 +255,9 @@ class Program
         package.Save();
     }
 
-    public static string BlockWrite(string cellReference, string dataFilename, string filename, bool createWorksheetIfRequired, bool autoFitColumns, bool style, string? worksheet, bool wipe, bool escape)
+    public static string BlockWrite(string cellReference, string dataFilename, ExcelPackage package, bool createWorksheetIfRequired, bool autoFitColumns, bool style, string? worksheet, bool wipe, bool escape, bool debug)
     {
+        Stopwatch watch = new();
         if (!XlWriteUtilities.TryParseCellReference(cellReference, out Cell? startCellLocation)) return $"Could not parse the cell reference {cellReference}.";
 
         List<FileInfo> checkFiles = new List<string> { dataFilename }
@@ -175,6 +267,7 @@ class Program
 
         if (checkFiles.Any(info => !info.Exists)) return $"Could not find file {checkFiles.First(info => !info.Exists)}.";
 
+        watch.Restart();
         List<string> li;
         try
         {
@@ -213,22 +306,17 @@ class Program
             }
             index++;
         }
+        watch.Stop();
+
+        if (debug) Console.Error.Write($"Read data from source in {watch.ElapsedMilliseconds}ms\n");
+
         try
         {
-            FileInfo excelFile = new(Path.Combine(Environment.CurrentDirectory, filename));
-
-            if (wipe)
-            {
-                try { File.Delete(excelFile.FullName); }
-                catch { return $"Could not delete file '{excelFile.FullName}'"; }
-            }
-
-            ExcelPackage package = new(excelFile);
-
             ExcelWorksheet sheet = string.IsNullOrWhiteSpace(worksheet)
                 ? XlWriteUtilities.SheetFromCell(package, startCellLocation, createWorksheetIfRequired)
                 : XlWriteUtilities.SheetFromName(package, worksheet, createWorksheetIfRequired);
 
+            watch.Restart();
             HashSet<int> columnsUsed = new();
             if (escape)
             {
@@ -246,6 +334,8 @@ class Program
                     columnsUsed.Add(cell.Column);
                 }
             }
+            watch.Stop();
+            if (debug) Console.Error.Write($"Pushed {cells.Count} cells in {watch.ElapsedMilliseconds}ms\n");
 
             if (style)
             {
@@ -285,7 +375,6 @@ class Program
             }
 
             if (autoFitColumns) foreach (int colNum in columnsUsed) sheet.Column(colNum).AutoFit();
-            package.Save();
         }
         catch (Exception exception)
         {
@@ -356,7 +445,7 @@ class Program
         if (data.Length > 8 && DateTime.TryParse(data, out DateTime dateTime)) return dateTime;
         return data;
     }
-    
+
     public static object GetEscapedValue(string data)
     {
         if (double.TryParse(data, out double numericValue)) return numericValue;
@@ -556,7 +645,7 @@ public static class StringExtensions
             ? value
             : value[..(maxLength - append.Length)] + append;
     }
-    
+
     public static string ProcessEscapeSequences(this string input)
     {
         if (input == null) throw new ArgumentNullException(nameof(input));
