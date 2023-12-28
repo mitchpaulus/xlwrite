@@ -33,13 +33,13 @@ jobs:
           dotnet publish -r linux-x64 --no-self-contained -o publish-linux-x64-framework-dependent -c Release -p:DebugType=None -p:PublishSingleFile=true "$CSPROJ"
           dotnet publish -r osx-x64   --no-self-contained -o publish-osx-x64-framework-dependent   -c Release -p:DebugType=None -p:PublishSingleFile=true "$CSPROJ"
 
-          zip -j excelchop-win-x64-"$(git tag --points-at)"-self-contained.zip   publish-win-x64-self-contained/*
-          zip -j excelchop-linux-x64-"$(git tag --points-at)"-self-contained.zip publish-linux-x64-self-contained/*
-          zip -j excelchop-osx-x64-"$(git tag --points-at)"-self-contained.zip   publish-osx-x64-self-contained/*
+          zip -j xlwrite-win-x64-"$(git tag --points-at)"-self-contained.zip   publish-win-x64-self-contained/*
+          zip -j xlwrite-linux-x64-"$(git tag --points-at)"-self-contained.zip publish-linux-x64-self-contained/*
+          zip -j xlwrite-osx-x64-"$(git tag --points-at)"-self-contained.zip   publish-osx-x64-self-contained/*
 
-          zip -j excelchop-win-x64-"$(git tag --points-at)"-framework-dependent.zip   publish-win-x64-framework-dependent/*
-          zip -j excelchop-linux-x64-"$(git tag --points-at)"-framework-dependent.zip publish-linux-x64-framework-dependent/*
-          zip -j excelchop-osx-x64-"$(git tag --points-at)"-framework-dependent.zip   publish-osx-x64-framework-dependent/*
+          zip -j xlwrite-win-x64-"$(git tag --points-at)"-framework-dependent.zip   publish-win-x64-framework-dependent/*
+          zip -j xlwrite-linux-x64-"$(git tag --points-at)"-framework-dependent.zip publish-linux-x64-framework-dependent/*
+          zip -j xlwrite-osx-x64-"$(git tag --points-at)"-framework-dependent.zip   publish-osx-x64-framework-dependent/*
 
       - name: GH Release
         uses: softprops/action-gh-release@v0.1.14
