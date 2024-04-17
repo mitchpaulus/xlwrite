@@ -563,7 +563,16 @@ public static class XlWriteUtilities
         ExcelWorksheets sheets = package.Workbook.Worksheets;
         bool sheetSpecified = cell.SheetNum > 0 || cell.SheetName != null;
 
-        if (!sheetSpecified) return sheets.Any() ? sheets.First() : sheets.Add("Sheet 1");
+        if (!sheetSpecified)
+        {
+            if (!sheets.Any()) return sheets.Add("Sheet 1");
+            var visibleSheets = sheets.Where(worksheet => worksheet.Hidden == eWorkSheetHidden.Visible).ToList();
+            if (!visibleSheets.Any())
+            {
+                throw new InvalidOperationException($"There are no visible sheets in file '{package.File.FullName}'.");
+            }
+            return visibleSheets.First();
+        }
         if (cell.SheetName != null) return SheetFromName(package, cell.SheetName, createSheetIfRequired);
         if (cell.SheetNum <= sheets.Count) return sheets[cell.SheetNum - 1];
 
