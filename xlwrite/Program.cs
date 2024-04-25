@@ -322,7 +322,14 @@ class Program
             {
                 foreach ((Cell cell, string value) in cells)
                 {
-                    sheet.Cells[cell.Row, cell.Column].Value = GetEscapedValue(value);
+                    object o = GetEscapedValue(value);
+                    if (o is string { Length: > 32767 } s)
+                    {
+                        Console.Error.Write($"Extremely long cell, row: {cell.Row}, col: {cell.Column}, length: {s.Length}. Skipping.\n");
+                        continue;
+                    }
+
+                    sheet.Cells[cell.Row, cell.Column].Value = o;
                     columnsUsed.Add(cell.Column);
                 }
             }
@@ -330,7 +337,14 @@ class Program
             {
                 foreach ((Cell cell, string value) in cells)
                 {
-                    sheet.Cells[cell.Row, cell.Column].Value = GetValue(value);
+                    object o = GetValue(value);
+                    if (o is string { Length: > 32767 } s)
+                    {
+                        Console.Error.Write($"Extremely long cell, row: {cell.Row}, col: {cell.Column}, length: {s.Length}. Skipping.\n");
+                        continue;
+                    }
+
+                    sheet.Cells[cell.Row, cell.Column].Value = o;
                     columnsUsed.Add(cell.Column);
                 }
             }
@@ -422,6 +436,13 @@ class Program
                 }
 
                 ExcelWorksheet sheet = XlWriteUtilities.SheetFromCell(package, cell, createWorksheetIfRequired);
+
+                object o = escape ? GetEscapedValue(field[1]) : GetValue(field[1]);
+                if (o is string { Length: > 32767 } s)
+                {
+                    Console.Error.Write($"Extremely long cell, row: {cell.Row}, col: {cell.Column}, length: {s.Length}. Skipping.\n");
+                    continue;
+                }
 
                 sheet.Cells[cell.Row, cell.Column].Value = escape ? GetEscapedValue(field[1]) : GetValue(field[1]);
 
