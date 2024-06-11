@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Primitives;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 
@@ -48,6 +49,7 @@ class Program
         bool wipe = false;
         bool escape = false;
         bool debug = false;
+        bool vba = false;
         string? worksheet = null;
 
         while (argIndex < args.Length)
@@ -98,6 +100,10 @@ class Program
             else if (arg is "--wipe")
             {
                 wipe = true; argIndex++;
+            }
+            else if (arg is "--vba")
+            {
+                vba = true; argIndex++;
             }
             else
             {
@@ -151,61 +157,75 @@ class Program
                         return 1;
                     }
 
-                    ExcelPackage package;
-                    try
+                    if (!vba)
                     {
-                        FileInfo excelFile = new(Path.Combine(Environment.CurrentDirectory, excelFilename));
-
-                        if (wipe)
+                        ExcelPackage package;
+                        try
                         {
-                            try
+                            FileInfo excelFile = new(Path.Combine(Environment.CurrentDirectory, excelFilename));
+
+                            if (wipe)
                             {
-                                File.Delete(excelFile.FullName);
+                                try
+                                {
+                                    File.Delete(excelFile.FullName);
+                                }
+                                catch
+                                {
+                                    Console.Error.Write($"Could not delete file '{excelFile.FullName}'");
+                                    return 1;
+                                }
                             }
-                            catch
-                            {
-                                Console.Error.Write($"Could not delete file '{excelFile.FullName}'");
-                                return 1;
-                            }
+
+                            package = new(excelFile);
+                        }
+                        catch
+                        {
+                            Console.Error.Write($"Could not open Excel file: {excelFilename}\n");
+                            return 1;
                         }
 
-                        package = new(excelFile);
+                        // Loop over the cell and data file pairs.
+                        // The reason for this level of effort is that the actual saving of the file takes significant time,
+                        // so instead of looping over input files and saving on each individual write, you can specify them
+                        // all from the command line in one command, resulting in a single save.
+                        foreach ((string cellRef, string dataFile, string? sheet) in cellDataFilenames)
+                        {
+                            if (debug) Console.Error.Write($"Writing '{dataFile}' to '{sheet ?? ""}': {cellRef}\n");
+                            string blockResults = BlockWrite(cellRef, dataFile, package, createWorksheetIfRequired,
+                                autofitColumns, style, sheet, wipe, escape, debug);
+                            if (string.IsNullOrWhiteSpace(blockResults)) continue;
+
+                            Console.Error.Write(blockResults);
+                            return 1;
+                        }
+
+                        // Only save once at the end.
+                        if (debug)
+                        {
+                            Stopwatch watch = new();
+                            watch.Start();
+                            package.Save();
+                            watch.Stop();
+                            Console.Error.Write($"Saving file: {watch.ElapsedMilliseconds}ms\n");
+                        }
+                        else
+                        {
+                            package.Save();
+                        }
+
+                        SetPageWidth(excelFilename, onePageWidth, onePageHeight, landscape);
                     }
-                    catch
+                    else // VBA mode
                     {
-                        Console.Error.Write($"Could not open Excel file: {excelFilename}\n");
-                        return 1;
+                        foreach ((string cellRef, string dataFile, string? sheet) in cellDataFilenames)
+                        {
+                            if (debug) Console.Error.Write($"Writing '{dataFile}' to '{sheet ?? ""}': {cellRef}\n");
+                            string vbaResults = BlockWriteVba(cellRef, dataFile, createWorksheetIfRequired, autofitColumns, style, sheet, wipe, escape, debug);
+                            Console.Write(vbaResults);
+                        }
                     }
 
-                    // Loop over the cell and data file pairs.
-                    // The reason for this level of effort is that the actual saving of the file takes significant time,
-                    // so instead of looping over input files and saving on each individual write, you can specify them
-                    // all from the command line in one command, resulting in a single save.
-                    foreach ((string cellRef, string dataFile, string? sheet) in cellDataFilenames)
-                    {
-                        if (debug) Console.Error.Write($"Writing '{dataFile}' to '{sheet ?? ""}': {cellRef}\n");
-                        string blockResults = BlockWrite(cellRef, dataFile, package, createWorksheetIfRequired, autofitColumns, style, sheet, wipe, escape, debug);
-                        if (string.IsNullOrWhiteSpace(blockResults)) continue;
-
-                        Console.Error.Write(blockResults);
-                        return 1;
-                    }
-
-                    // Only save once at the end.
-                    if (debug)
-                    {
-                        Stopwatch watch = new();
-                        watch.Start();
-                        package.Save();
-                        watch.Stop();
-                        Console.Error.Write($"Saving file: {watch.ElapsedMilliseconds}ms\n");
-                    }
-                    else
-                    {
-                        package.Save();
-                    }
-
-                    SetPageWidth(excelFilename, onePageWidth, onePageHeight, landscape);
                     return 0;
                 }
 
@@ -254,6 +274,213 @@ class Program
         }
         package.Save();
     }
+
+    public static string BlockWriteVba(string cellReference, string dataFilename, bool createWorksheetIfRequired, bool autoFitColumns, bool style, string? worksheet, bool wipe, bool escape, bool debug)
+    {
+        StringBuilder b = new();
+
+        b.Append("Dim sheet As Worksheet\n");
+
+        if (string.IsNullOrWhiteSpace(worksheet))
+        {
+            b.Append("sheetFound = False\n");
+            b.Append("For Each s in ActiveWorkbook.Worksheets\n");
+            b.Append("  If sheet.Visible Then\n");
+            b.Append("    sheet = s\n");
+            b.Append("    sheetFound = True\n");
+            b.Append("    Exit For\n");
+            b.Append("  End If\n");
+            b.Append("Next s\n");
+            b.Append("If Not sheetFound Then\n");
+            b.Append("  Err.Raise 1, \"\", \"No visible sheets found in workbook.\"\n");
+            b.Append("End If\n");
+        }
+        else
+        {
+            b.Append("sheetFound = False\n");
+            b.Append("For Each s in ActiveWorkbook.Worksheets\n");
+            b.Append("  If s.Name = \"" + worksheet + "\" Then\n");
+            b.Append("    sheet = s\n");
+            b.Append("    sheetFound = True\n");
+            b.Append("    Exit For\n");
+            b.Append("  End If\n");
+            b.Append("Next s\n");
+            b.Append("If Not sheetFound Then\n");
+            b.Append("  Err.Raise 1, \"\", \"Could not find sheet named '" + worksheet + "' in workbook.\"\n");
+            b.Append("End If\n");
+        }
+
+
+        Stopwatch watch = new();
+        if (!XlWriteUtilities.TryParseCellReference(cellReference, out Cell? startCellLocation)) return $"Could not parse the cell reference {cellReference}.";
+
+        watch.Restart();
+        List<string> li;
+        try
+        {
+            if (dataFilename == "-")
+            {
+                li = new List<string>();
+                using TextReader reader = Console.In;
+                while (reader.ReadLine() is { } text)
+                {
+                    li.Add(text);
+                }
+            }
+            else
+            {
+                FileInfo fullDataFilename = new(Path.Combine(Environment.CurrentDirectory, dataFilename));
+                li = File.ReadLines(fullDataFilename.FullName, Encoding.UTF8).ToList();
+            }
+        }
+        catch (Exception)
+        {
+            return "Could not read data from data source.";
+        }
+
+
+        IEnumerable<string[]> lines = li.Select(s => s.Split('\t'));
+        List<(Cell cell, string value)> cells = new();
+
+        int index = 0;
+        foreach (string[] fields in lines)
+        {
+            int fieldIndex = 0;
+            foreach (string field in fields)
+            {
+                cells.Add((new Cell { Row = startCellLocation.Row + index, Column = startCellLocation.Column + fieldIndex }, field));
+                fieldIndex++;
+            }
+            index++;
+        }
+        watch.Stop();
+
+        if (debug) Console.Error.Write($"Read data from source in {watch.ElapsedMilliseconds}ms\n");
+
+        try
+        {
+            // ExcelWorksheet sheet = string.IsNullOrWhiteSpace(worksheet)
+                // ? XlWriteUtilities.SheetFromCell(package, startCellLocation, createWorksheetIfRequired)
+                // : XlWriteUtilities.SheetFromName(package, worksheet, createWorksheetIfRequired);
+
+            watch.Restart();
+            HashSet<int> columnsUsed = new();
+            if (escape)
+            {
+                foreach ((Cell cell, string value) in cells)
+                {
+                    object o = GetEscapedValue(value);
+                    if (o is string { Length: > 32767 } s)
+                    {
+                        Console.Error.Write($"Extremely long cell, row: {cell.Row}, col: {cell.Column}, length: {s.Length}. Skipping.\n");
+                        continue;
+                    }
+                    else if (o is DateTime dt)
+                    {
+                        b.Append($"  sheet.Cells[{cell.Row}, {cell.Column}].Value = {dt.ToOADate()}\n");
+                    }
+                    else if (o is double d)
+                    {
+                        b.Append($"  sheet.Cells[{cell.Row}, {cell.Column}].Value = {d}\n");
+                    }
+                    else if (o is string str)
+                    {
+                        b.Append($"  sheet.Cells[{cell.Row}, {cell.Column}].Value = \"{str}\"\n");
+                    }
+                    else
+                    {
+                        b.Append($"  sheet.Cells[{cell.Row}, {cell.Column}].Value = {o}\n");
+                    }
+
+                    // sheet.Cells[cell.Row, cell.Column].Value = o;
+                    columnsUsed.Add(cell.Column);
+                }
+            }
+            else
+            {
+                foreach ((Cell cell, string value) in cells)
+                {
+                    object o = GetValue(value);
+                    if (o is string { Length: > 32767 } s)
+                    {
+                        Console.Error.Write($"Extremely long cell, row: {cell.Row}, col: {cell.Column}, length: {s.Length}. Skipping.\n");
+                        continue;
+                    }
+                    else if (o is DateTime dt)
+                    {
+                        b.Append($"  sheet.Cells[{cell.Row}, {cell.Column}].Value = {dt.ToOADate()}\n");
+                    }
+                    else if (o is double d)
+                    {
+                        b.Append($"  sheet.Cells[{cell.Row}, {cell.Column}].Value = {d}\n");
+                    }
+                    else if (o is string str)
+                    {
+                        b.Append($"  sheet.Cells[{cell.Row}, {cell.Column}].Value = \"{str}\"\n");
+                    }
+                    else
+                    {
+                        b.Append($"  sheet.Cells[{cell.Row}, {cell.Column}].Value = {o}\n");
+                    }
+
+                    // sheet.Cells[cell.Row, cell.Column].Value = o;
+                    columnsUsed.Add(cell.Column);
+                }
+            }
+            watch.Stop();
+            if (debug) Console.Error.Write($"Pushed {cells.Count} cells in {watch.ElapsedMilliseconds}ms\n");
+
+            // if (style)
+            // {
+                // if (cells.Any())
+                // {
+                    // int headerRow = cells.Min(c => c.cell.Row);
+                    // int startColumn = cells.Min(c => c.cell.Column);
+                    // int endRow = cells.Max(c => c.cell.Row);
+                    // int endColumn = cells.Max(c => c.cell.Column);
+
+                    // for (int row = headerRow; row <= endRow; row++)
+                    // {
+                        // for (int column = startColumn; column <= endColumn; column++)
+                        // {
+                            // sheet.Cells[row, column].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                        // }
+                    // }
+
+                    // // Loop over header cells, make them bold, white text, CCLLC blue background
+                    // for (int column = startColumn; column <= endColumn; column++)
+                    // {
+                        // ExcelStyle? excelStyle = sheet.Cells[headerRow, column].Style;
+                        // excelStyle.Font.Bold = true;
+                        // excelStyle.Font.Color.SetColor(Color.White);
+                        // excelStyle.Fill.PatternType = ExcelFillStyle.Solid;
+                        // excelStyle.Fill.BackgroundColor.SetColor(Color.FromArgb(0, 73, 135));
+                        // excelStyle.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    // }
+                // }
+
+                // sheet.PrinterSettings.FitToPage = true;
+                // sheet.PrinterSettings.FitToWidth = 1;
+                // sheet.PrinterSettings.FitToHeight = 0;
+                // sheet.PrinterSettings.Orientation = eOrientation.Landscape;
+                // sheet.HeaderFooter.OddFooter.CenteredText = sheet.Name;
+                // sheet.HeaderFooter.ScaleWithDocument = false;
+            // }
+
+            if (autoFitColumns) foreach (int colNum in columnsUsed) b.Append($"  sheet.Column({colNum}).AutoFit()\n");
+                // sheet.Column(colNum).AutoFit();
+        }
+        catch (Exception exception)
+        {
+            string errorMessage = $"There was an error with writing the data to the excel file.\n{exception.Message}\n";
+            if (exception.InnerException != null) errorMessage += exception.InnerException.Message;
+
+            return errorMessage;
+        }
+
+        return b.ToString();
+    }
+
 
     public static string BlockWrite(string cellReference, string dataFilename, ExcelPackage package, bool createWorksheetIfRequired, bool autoFitColumns, bool style, string? worksheet, bool wipe, bool escape, bool debug)
     {
@@ -505,6 +732,9 @@ class Program
         helpText.AppendLine("Simple block usage:");
         helpText.AppendLine("    xlwrite block A1 mydata.tsv excelfile.xlsx");
         helpText.AppendLine();
+        helpText.AppendLine("Writing multiple blocks usage:");
+        helpText.AppendLine("    xlwrite block A1 mydata.tsv excelfile.xlsx E2 otherdata.tsv excelfile.xlsx");
+        helpText.AppendLine();
         helpText.AppendLine("Reading from standard input:");
         helpText.AppendLine("    cat myfile.tsv | xlwrite block A1 - excelfile.xlsx");
         helpText.AppendLine();
@@ -610,7 +840,6 @@ public static class XlWriteUtilities
             return sheets.Add(name.SanitizeExcelSheetName());
         }
         throw new InvalidOperationException($"Could not find sheet named '{name}' in file '{package.File.FullName}'.");
-
     }
 }
 
