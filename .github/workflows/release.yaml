@@ -9,11 +9,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         name: Checkout Repo
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 7
 
@@ -42,7 +42,7 @@ jobs:
           zip -j xlwrite-osx-x64-"$(git tag --points-at)"-framework-dependent.zip   publish-osx-x64-framework-dependent/*
 
       - name: GH Release
-        uses: softprops/action-gh-release@v0.1.14
+        uses: softprops/action-gh-release@v2
         with:
           fail_on_unmatched_files: true
           files: "*.zip"
