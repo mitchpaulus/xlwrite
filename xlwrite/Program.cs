@@ -5,8 +5,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 using System.Text.RegularExpressions;
+using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
 using Microsoft.Extensions.Primitives;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
@@ -50,6 +53,7 @@ class Program
         bool escape = false;
         bool debug = false;
         bool vba = false;
+        bool compile = false;
         string? worksheet = null;
 
         while (argIndex < args.Length)
@@ -70,6 +74,10 @@ class Program
             else if (args[argIndex] == "--style")
             {
                 style = true; argIndex++;
+            }
+            else if (args[argIndex] == "--compile")
+            {
+                compile = true; argIndex++;
             }
             else if (args[argIndex] is "-e" or "--escape")
             {
@@ -247,6 +255,29 @@ class Program
                     if (string.IsNullOrWhiteSpace(indResults)) return 0;
                     Console.Error.Write(indResults.EndWithNewline());
                     return 1;
+                }
+
+                if (string.Equals(command, "compile"))
+                {
+                    int remainingArgs = args.Length - (argIndex + 1);
+                    if (remainingArgs < 1)
+                    {
+                        Console.Error.Write("Expected file or '-' after compile");
+                        Console.Error.Write(HelpText());
+                        return 1;
+                    }
+
+                    string fileName = args[argIndex + 1];
+
+                    (string? output, var errorMessages) = Compile(fileName);
+                    if (errorMessages.Any())
+                    {
+                        foreach (var m in errorMessages) Console.Error.Write($"{m}\n");
+                        return 1;
+                    }
+
+                    Console.Write(output);
+                    return 0;
                 }
 
                 Console.Error.Write($"Unknown sub command {command}. Please review help.\n");
@@ -755,6 +786,53 @@ class Program
 
 
         return helpText.ToString();
+    }
+
+    public static (string, List<string>) Compile(string filepath)
+    {
+        AntlrInputStream stream = filepath == "-" ? new AntlrInputStream(Console.In) : new AntlrFileStream(filepath, Encoding.UTF8);
+
+        XlWriteLexer l = new(stream);
+        CommonTokenStream tokenStream = new(l);
+        XlWriteParser parser = new(tokenStream);
+        parser.RemoveErrorListeners();
+        ErrorListener errorListener = new();
+        parser.AddErrorListener(errorListener);
+        var file = parser.file();
+
+        if (errorListener.Messages.Any())
+        {
+            return ("", errorListener.Messages);
+        }
+
+        ParseTreeWalker walker = new();
+        var listener = new FormatListener();
+
+        walker.Walk(listener, file);
+
+        StringBuilder b = new();
+        foreach (var line in listener.Lines)
+        {
+            b.Append(line);
+            b.Append('\n');
+        }
+
+        return (b.ToString(), new List<string>());
+    }
+}
+
+public class ErrorListener : IAntlrErrorListener<IToken>, IAntlrErrorListener<int>
+{
+    public readonly List<string>  Messages = new();
+
+    public void SyntaxError(TextWriter output, IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
+    {
+        Messages.Add(msg);
+    }
+
+    public void SyntaxError(TextWriter output, IRecognizer recognizer, int offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
+    {
+        Messages.Add(msg);
     }
 }
 

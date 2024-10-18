@@ -1,4 +1,8 @@
-file : (selection actions)* ;
+grammar XlWrite;
+
+file : item* ;
+
+item : selection actions ;
 
 CELL : [a-zA-Z]+[0-9]+ ;
 
@@ -6,22 +10,35 @@ COLON : ':' ;
 
 range : CELL COLON CELL ;
 
-selection : CELL | range ;
+selection : STRING? (CELL | range) ;
+
+STRING : '"' (ESC|.)*? '"' ;
+fragment ESC : '\\"'  | '\\\\' ;
 
 LCURLY : '{' ;
 RCURLY : '}' ;
+COMMA : ',' ;
 
 actions : LCURLY (action (COMMA action)*)? RCURLY ;
 
 action
-    : fillAction
-    | widthAction
+    : fillAction # fillActionExp
+    | widthAction # widthActionExp
+    | borderAction # borderActionExp
+    | boldAction # boldActionExp
     ;
 
-fillAction : 'fill' COLOR ;
+boldAction : 'bold' ;
+fillAction : 'fill' color ;
 widthAction : 'width' INT ;
+borderAction : 'border' color? ;
 
 INT : [0-9]+ ;
-COLOR : 'red' | 'blue'
+
+color : rgbColor | knownColor ;
+
+knownColor : 'red' | 'blue' | 'black' ;
+
+rgbColor : 'rgb' INT INT INT ;
 
 WS : [ \t\r\n]+ -> skip ;

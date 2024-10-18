@@ -1,0 +1,5 @@
+#!/bin/sh
+
+rm -f ./*.java ./*.class
+java -jar "$ANTLR_JAR" -Dlanguage=Java XlWrite.g4
+javac ./*.java
