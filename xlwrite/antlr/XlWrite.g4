@@ -10,6 +10,7 @@ COLON : ':' ;
 
 range : CELL COLON CELL ;
 
+// STRING is the optional worksheet name.
 selection : STRING? (CELL | range) ;
 
 STRING : '"' (ESC|.)*? '"' ;
