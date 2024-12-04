@@ -53,7 +53,6 @@ class Program
         bool escape = false;
         bool debug = false;
         bool vba = false;
-        bool compile = false;
         string? worksheet = null;
 
         while (argIndex < args.Length)
@@ -74,10 +73,6 @@ class Program
             else if (args[argIndex] == "--style")
             {
                 style = true; argIndex++;
-            }
-            else if (args[argIndex] == "--compile")
-            {
-                compile = true; argIndex++;
             }
             else if (args[argIndex] is "-e" or "--escape")
             {
@@ -744,6 +739,7 @@ class Program
         helpText.AppendLine("USAGE:");
         helpText.AppendLine("    xlwrite [OPTION].. block STARTCELL DATAFILE EXCELFILE");
         helpText.AppendLine("    xlwrite [OPTION].. ind DATAFILE EXCELFILE");
+        helpText.AppendLine("    xlwrite compile SCRIPTFILE");
         helpText.AppendLine();
         helpText.AppendLine("ARGS:");
         helpText.AppendLine($"    {"STARTCELL",padding}Upper left hand corner cell. Either A1 form or R1C1 form.");
