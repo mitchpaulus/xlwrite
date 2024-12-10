@@ -3,7 +3,6 @@ grammar XlWrite;
 file : item* ;
 
 item : selection actions ;
-
 CELL : [a-zA-Z]+[0-9]+ ;
 
 COLON : ':' ;
@@ -41,5 +40,4 @@ color : rgbColor | knownColor ;
 knownColor : 'red' | 'blue' | 'black' ;
 
 rgbColor : 'rgb' INT INT INT ;
-
 WS : [ \t\r\n]+ -> skip ;

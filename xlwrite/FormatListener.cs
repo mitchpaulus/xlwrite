@@ -37,7 +37,7 @@ public class FormatListener : XlWriteBaseListener
     private string GetVbaSelectionObject(string? worksheet, XlWriteParser.RangeContext rangeContext)
     {
         return worksheet is null
-            ? $"ActiveWorksheet.Range(\"{rangeContext.GetText()}\")"
+            ? $"ActiveSheet.Range(\"{rangeContext.GetText()}\")"
             : $"ActiveWorkbook.Worksheets(\"{worksheet}\").Range(\"{rangeContext.GetText()}\")";
     }
 }
