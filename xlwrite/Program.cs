@@ -563,6 +563,8 @@ class Program
 
         if (debug) Console.Error.Write($"Read data from source in {watch.ElapsedMilliseconds}ms\n");
 
+        List<(Cell, DateTime)> datetimesFound = new();
+
         try
         {
             ExcelWorksheet sheet = string.IsNullOrWhiteSpace(worksheet)
@@ -583,6 +585,9 @@ class Program
                     }
 
                     sheet.Cells[cell.Row, cell.Column].Value = o;
+
+                    if (o is DateTime d) datetimesFound.Add((cell, d));
+
                     columnsUsed.Add(cell.Column);
                 }
             }
@@ -598,9 +603,27 @@ class Program
                     }
 
                     sheet.Cells[cell.Row, cell.Column].Value = o;
+                    if (o is DateTime d) datetimesFound.Add((cell, d));
                     columnsUsed.Add(cell.Column);
                 }
             }
+
+            // Reformat dates
+            string dtFormat = "yyyy-mm-dd";
+            if (datetimesFound.Any(d => d.Item2.Second != 0))
+            {
+                dtFormat = "yyyy-mm-dd HH:mm:ss";
+            }
+            else if (datetimesFound.Any(d => d.Item2.Minute != 0) || datetimesFound.Any(d => d.Item2.Hour != 0))
+            {
+                dtFormat = "yyyy-mm-dd HH:mm";
+            }
+
+            foreach ((Cell cell, DateTime _) in datetimesFound)
+            {
+                sheet.Cells[cell.Row, cell.Column].Style.Numberformat.Format = dtFormat;
+            }
+
             watch.Stop();
             if (debug) Console.Error.Write($"Pushed {cells.Count} cells in {watch.ElapsedMilliseconds}ms\n");
 
