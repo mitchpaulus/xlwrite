@@ -1,3 +1,10 @@
 *.cs text eol=crlf
 *.csproj text eol=crlf
 *.json text eol=crlf
+*.g4 text eol=lf
+*.sln text eol=crlf
+*.xl text eol=lf
+compile_grammer text eol=lf
+compile_java text eol=lf
+*.DotSettings text eol=lf
+*.md text eol=lf
