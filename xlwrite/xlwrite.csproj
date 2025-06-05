@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="Antlr4.Runtime.Standard" Version="4.13.1" />
-    <PackageReference Include="EPPlus" Version="8.0.2" />
+    <PackageReference Include="EPPlus" Version="8.0.5" />
   </ItemGroup>
 
 </Project>
