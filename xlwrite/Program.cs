@@ -21,7 +21,8 @@ class Program
     static int Main(string[] args)
     {
         // This executable is free and open source, and is non-commercial.
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        // ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        ExcelPackage.License.SetNonCommercialPersonal("Mitchell T. Paulus");
 
         if (args.Length == 0)
         {
