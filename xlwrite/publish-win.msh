@@ -1,0 +1,6 @@
+#!/usr/bin/env mshell
+['dotnet' 'publish' '-r' 'win-x64' '-o' 'publish/' '-c' 'Release' '-p:DebugType=None' '--no-self-contained' '-p:PublishSingleFile=true']!
+`publish/xlwrite.exe` $"{$LOCALBIN}/xlwrite.exe" cp
+
+# dotnet publish -r linux-x64 -o publish/ -c Release -p:DebugType=None --no-self-contained -p:PublishSingleFile=true && \
+# cp publish/xlwrite "$LOCALBIN"/xlwrite

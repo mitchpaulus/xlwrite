@@ -748,7 +748,18 @@ class Program
     {
         if (double.TryParse(data, out double numericValue)) return numericValue;
         // This is to prevent fractions like 1/6 from being converted to dates.
-        if (data.Length > 8 && DateTime.TryParse(data, out DateTime dateTime)) return dateTime;
+
+        // Specifically handle a date in standard ISO form (YYYY-MM-dd).
+        if (DateTime.TryParseExact(data, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out var dateTimeParsed))
+        {
+            return dateTimeParsed;
+        }
+
+        if (data.Length >= 8)
+        {
+            if (DateTime.TryParse(data, out DateTime dateTime)) return dateTime;
+        }
+
         return data.ProcessEscapeSequences();
     }
 
