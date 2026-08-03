@@ -680,15 +680,36 @@ class Program
 
     public static string IndWrite(string dataFilename, string filename, bool createWorksheetIfRequired, bool wipe, bool escape)
     {
-        List<FileInfo> checkFiles = new List<string> { dataFilename, filename }.Select(s => new FileInfo(Path.Combine(Environment.CurrentDirectory, s))).ToList();
+        List<string> namesToCheck = new() { filename };
+        if (!string.Equals("-", dataFilename)) namesToCheck.Insert(0, dataFilename);
+
+        List<FileInfo> checkFiles = namesToCheck
+            .Select(s => new FileInfo(Path.Combine(Environment.CurrentDirectory, s)))
+            .ToList();
+
         if (checkFiles.Any(info => !info.Exists)) return $"Could not find file {checkFiles.First(info => !info.Exists)}.";
 
         try
         {
-            IEnumerable<string[]> lines = File.ReadLines(checkFiles[0].FullName, Encoding.UTF8).Select(s => s.Split('\t'));
+            List<string> li;
+            if (dataFilename == "-")
+            {
+                li = new List<string>();
+                using TextReader reader = Console.In;
+                while (reader.ReadLine() is { } text)
+                {
+                    li.Add(text);
+                }
+            }
+            else
+            {
+                FileInfo fullDataFilename = new(Path.Combine(Environment.CurrentDirectory, dataFilename));
+                li = File.ReadLines(fullDataFilename.FullName, Encoding.UTF8).ToList();
+            }
 
+            IEnumerable<string[]> lines = li.Select(s => s.Split('\t'));
 
-            FileInfo excelFile = checkFiles[1];
+            FileInfo excelFile = new(Path.Combine(Environment.CurrentDirectory, filename));
             if (wipe)
             {
                 try { File.Delete(excelFile.FullName); }
