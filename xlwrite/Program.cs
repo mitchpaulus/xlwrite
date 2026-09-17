@@ -822,7 +822,7 @@ public class Program
         StringBuilder helpText = new();
 
         const int padding = -12;
-        const int optionPadding = -15;
+        const int optionPadding = -17;
 
         // ReSharper disable StringLiteralTypo
         helpText.AppendLine("USAGE:");
