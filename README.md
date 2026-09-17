@@ -19,6 +19,23 @@ Typically surrounding with double quotes will suffice.
 xlwrite block "'My Sheet'!A1" datafile.tsv spreadsheet.xlsx
 ```
 
+## Data Types
+
+`xlwrite` uses the following logic to determine how to write a value to Excel.
+
+- If it can be parsed as a number (included formats like scientific notation), it will be a number.
+- If it can be parsed as a date, it will be a date
+- Otherwise, it will be text
+
+Use `--text` to force whole columns to be written as text:
+
+```sh
+xlwrite --text A,C block A1 datafile.tsv spreadsheet.xlsx
+```
+
+Columns can be given as letters or 1-based numbers.
+In `block` mode they are relative to the start cell; in `ind` mode they are the worksheet's columns.
+
 ## Installation
 
 `xlwrite` is currently compiled for x64 machines on Linux, Windows, and MacOS.

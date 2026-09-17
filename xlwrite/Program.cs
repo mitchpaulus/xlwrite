@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,7 @@ using OfficeOpenXml.Style;
 
 namespace xlwrite;
 
-class Program
+public class Program
 {
     static int Main(string[] args)
     {
@@ -53,6 +54,7 @@ class Program
         bool debug = false;
         bool vba = false;
         string? worksheet = null;
+        HashSet<int> textColumns = new();
 
         while (argIndex < args.Length)
         {
@@ -85,6 +87,21 @@ class Program
                     return 1;
                 }
                 worksheet = args[argIndex + 1];
+                argIndex += 2;
+            }
+            else if (arg is "-t" or "--text")
+            {
+                if (argIndex + 1 >= args.Length)
+                {
+                    Console.Error.Write("Expected a column list after --text, e.g. '--text A,C' or '--text 1,3'.\n");
+                    return 1;
+                }
+                if (!XlWriteUtilities.TryParseColumnList(args[argIndex + 1], out HashSet<int>? parsedColumns))
+                {
+                    Console.Error.Write($"Could not parse column list '{args[argIndex + 1]}' for --text. Use comma separated column letters or 1-based numbers, e.g. 'A,C' or '1,3'.\n");
+                    return 1;
+                }
+                textColumns.UnionWith(parsedColumns);
                 argIndex += 2;
             }
             else if (arg is "--1-page-width" or "--1pagewidth")
@@ -195,7 +212,7 @@ class Program
                         {
                             if (debug) Console.Error.Write($"Writing '{dataFile}' to '{sheet ?? ""}': {cellRef}\n");
                             string blockResults = BlockWrite(cellRef, dataFile, package, createWorksheetIfRequired,
-                                autofitColumns, style, sheet, wipe, escape, debug);
+                                autofitColumns, style, sheet, wipe, escape, debug, textColumns);
                             if (string.IsNullOrWhiteSpace(blockResults)) continue;
 
                             Console.Error.Write(blockResults);
@@ -223,7 +240,7 @@ class Program
                         foreach ((string cellRef, string dataFile, string? sheet) in cellDataFilenames)
                         {
                             if (debug) Console.Error.Write($"Writing '{dataFile}' to '{sheet ?? ""}': {cellRef}\n");
-                            string vbaResults = BlockWriteVba(cellRef, dataFile, createWorksheetIfRequired, autofitColumns, style, sheet, wipe, escape, debug);
+                            string vbaResults = BlockWriteVba(cellRef, dataFile, createWorksheetIfRequired, autofitColumns, style, sheet, wipe, escape, debug, textColumns);
                             Console.Write(vbaResults);
                         }
                     }
@@ -242,7 +259,7 @@ class Program
 
                     string dataFilename = args[argIndex + 1];
                     string excelFilename = args[argIndex + 2];
-                    string indResults = IndWrite(dataFilename, excelFilename, createWorksheetIfRequired, wipe, escape);
+                    string indResults = IndWrite(dataFilename, excelFilename, createWorksheetIfRequired, wipe, escape, textColumns);
 
                     SetPageWidth(excelFilename, onePageWidth, onePageHeight, landscape);
 
@@ -300,7 +317,7 @@ class Program
         package.Save();
     }
 
-    public static string BlockWriteVba(string cellReference, string dataFilename, bool createWorksheetIfRequired, bool autoFitColumns, bool style, string? worksheet, bool wipe, bool escape, bool debug)
+    public static string BlockWriteVba(string cellReference, string dataFilename, bool createWorksheetIfRequired, bool autoFitColumns, bool style, string? worksheet, bool wipe, bool escape, bool debug, HashSet<int>? textColumns = null)
     {
         StringBuilder b = new();
 
@@ -394,7 +411,7 @@ class Program
             {
                 foreach ((Cell cell, string value) in cells)
                 {
-                    object o = GetEscapedValue(value);
+                    object o = GetEscapedValue(value, IsTextColumn(textColumns, cell.Column - startCellLocation.Column + 1));
                     if (o is string { Length: > 32767 } s)
                     {
                         Console.Error.Write($"Extremely long cell, row: {cell.Row}, col: {cell.Column}, length: {s.Length}. Skipping.\n");
@@ -425,7 +442,7 @@ class Program
             {
                 foreach ((Cell cell, string value) in cells)
                 {
-                    object o = GetValue(value);
+                    object o = GetValue(value, IsTextColumn(textColumns, cell.Column - startCellLocation.Column + 1));
                     if (o is string { Length: > 32767 } s)
                     {
                         Console.Error.Write($"Extremely long cell, row: {cell.Row}, col: {cell.Column}, length: {s.Length}. Skipping.\n");
@@ -507,7 +524,7 @@ class Program
     }
 
 
-    public static string BlockWrite(string cellReference, string dataFilename, ExcelPackage package, bool createWorksheetIfRequired, bool autoFitColumns, bool style, string? worksheet, bool wipe, bool escape, bool debug)
+    public static string BlockWrite(string cellReference, string dataFilename, ExcelPackage package, bool createWorksheetIfRequired, bool autoFitColumns, bool style, string? worksheet, bool wipe, bool escape, bool debug, HashSet<int>? textColumns = null)
     {
         Stopwatch watch = new();
         if (!XlWriteUtilities.TryParseCellReference(cellReference, out Cell? startCellLocation)) return $"Could not parse the cell reference {cellReference}.";
@@ -576,7 +593,7 @@ class Program
             {
                 foreach ((Cell cell, string value) in cells)
                 {
-                    object o = GetEscapedValue(value);
+                    object o = GetEscapedValue(value, IsTextColumn(textColumns, cell.Column - startCellLocation.Column + 1));
                     if (o is string { Length: > 32767 } s)
                     {
                         Console.Error.Write($"Extremely long cell, row: {cell.Row}, col: {cell.Column}, length: {s.Length}. Skipping.\n");
@@ -594,7 +611,7 @@ class Program
             {
                 foreach ((Cell cell, string value) in cells)
                 {
-                    object o = GetValue(value);
+                    object o = GetValue(value, IsTextColumn(textColumns, cell.Column - startCellLocation.Column + 1));
                     if (o is string { Length: > 32767 } s)
                     {
                         Console.Error.Write($"Extremely long cell, row: {cell.Row}, col: {cell.Column}, length: {s.Length}. Skipping.\n");
@@ -676,7 +693,7 @@ class Program
         return "";
     }
 
-    public static string IndWrite(string dataFilename, string filename, bool createWorksheetIfRequired, bool wipe, bool escape)
+    public static string IndWrite(string dataFilename, string filename, bool createWorksheetIfRequired, bool wipe, bool escape, HashSet<int>? textColumns = null)
     {
         List<string> namesToCheck = new() { filename };
         if (!string.Equals("-", dataFilename)) namesToCheck.Insert(0, dataFilename);
@@ -733,14 +750,15 @@ class Program
 
                 ExcelWorksheet sheet = XlWriteUtilities.SheetFromCell(package, cell, createWorksheetIfRequired);
 
-                object o = escape ? GetEscapedValue(field[1]) : GetValue(field[1]);
+                bool forceText = IsTextColumn(textColumns, cell.Column);
+                object o = escape ? GetEscapedValue(field[1], forceText) : GetValue(field[1], forceText);
                 if (o is string { Length: > 32767 } s)
                 {
                     Console.Error.Write($"Extremely long cell, row: {cell.Row}, col: {cell.Column}, length: {s.Length}. Skipping.\n");
                     continue;
                 }
 
-                sheet.Cells[cell.Row, cell.Column].Value = escape ? GetEscapedValue(field[1]) : GetValue(field[1]);
+                sheet.Cells[cell.Row, cell.Column].Value = o;
 
                 lineNumber++;
             }
@@ -755,17 +773,34 @@ class Program
         return "";
     }
 
-    public static object GetValue(string data)
+    private static bool IsTextColumn(HashSet<int>? textColumns, int column) => textColumns is not null && textColumns.Contains(column);
+
+    /// <summary>
+    /// Try to parse a number that Excel can actually store. Values like '9E750' parse as infinity in .NET,
+    /// and writing them numerically produces a #NUM! cell in Excel, so those are reported and left as text.
+    /// </summary>
+    public static bool TryParseExcelNumber(string data, out double numericValue)
     {
-        if (double.TryParse(data, out double numericValue)) return numericValue;
+        if (!double.TryParse(data, NumberStyles.Float, CultureInfo.InvariantCulture, out numericValue)) return false;
+        if (double.IsFinite(numericValue)) return true;
+
+        Console.Error.Write($"Value '{data}' is outside the numeric range Excel supports. Writing as text.\n");
+        return false;
+    }
+
+    public static object GetValue(string data, bool forceText = false)
+    {
+        if (forceText) return data;
+        if (TryParseExcelNumber(data, out double numericValue)) return numericValue;
         // This is to prevent fractions like 1/6 from being converted to dates.
         if (data.Length > 8 && DateTime.TryParse(data, out DateTime dateTime)) return dateTime;
         return data;
     }
 
-    public static object GetEscapedValue(string data)
+    public static object GetEscapedValue(string data, bool forceText = false)
     {
-        if (double.TryParse(data, out double numericValue)) return numericValue;
+        if (forceText) return data.ProcessEscapeSequences();
+        if (TryParseExcelNumber(data, out double numericValue)) return numericValue;
         // This is to prevent fractions like 1/6 from being converted to dates.
 
         // Specifically handle a date in standard ISO form (YYYY-MM-dd).
@@ -805,6 +840,9 @@ class Program
         helpText.AppendLine($"    {"-c, --create",optionPadding}Create specified worksheet if required.");
         helpText.AppendLine($"    {"-e, --escape",optionPadding}Process escape sequences '\\n' and '\\t'");
         helpText.AppendLine($"    {"-h, --help",optionPadding}Print this help information and exit.");
+        helpText.AppendLine($"    {"-t, --text COLS",optionPadding}Always write the given columns as text, skipping number/date detection.");
+        helpText.AppendLine($"    {"",optionPadding}COLS is a comma separated list of column letters or 1-based numbers, e.g. 'A,C' or '1,3'.");
+        helpText.AppendLine($"    {"",optionPadding}In block mode columns are relative to STARTCELL; in ind mode they are sheet columns.");
         helpText.AppendLine($"    {"-w, --sheet",optionPadding}Specify worksheet. Only affect block mode.");
         helpText.AppendLine($"    {"    --wipe",optionPadding}Delete existing file before writing. Be careful!");
         helpText.AppendLine($"    {"-v, --version",optionPadding}Print version information and exit.");
@@ -899,6 +937,38 @@ public class Cell
 
 public static class XlWriteUtilities
 {
+    /// <summary>
+    /// Parse a comma separated list of columns, each either letters ('A', 'AB') or a 1-based number ('1', '28').
+    /// </summary>
+    public static bool TryParseColumnList(string columnList, [NotNullWhen(returnValue:true)] out HashSet<int>? columns)
+    {
+        columns = null;
+        HashSet<int> result = new();
+        foreach (string raw in columnList.Split(','))
+        {
+            string item = raw.Trim();
+            if (item.Length == 0) continue;
+
+            if (item.All(char.IsAsciiDigit))
+            {
+                if (!int.TryParse(item, out int number) || number < 1) return false;
+                result.Add(number);
+            }
+            else if (item.All(char.IsAsciiLetter))
+            {
+                result.Add(item.ExcelColumnNameToInt());
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        if (result.Count == 0) return false;
+        columns = result;
+        return true;
+    }
+
     public static bool TryParseCellReference(string cellReference, [NotNullWhen(returnValue:true)] out Cell? cellLocation)
     {
         string worksheetNamePattern = @"'[^:\\/?*[\]]{1,31}'!";
