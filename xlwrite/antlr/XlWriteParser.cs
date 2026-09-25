@@ -36,24 +36,70 @@ public partial class XlWriteParser : Parser {
 	protected static DFA[] decisionToDFA;
 	protected static PredictionContextCache sharedContextCache = new PredictionContextCache();
 	public const int
-		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, CELL=9, 
-		COLON=10, STRING=11, LCURLY=12, RCURLY=13, COMMA=14, INT=15, WS=16;
+		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
+		T__9=10, T__10=11, T__11=12, T__12=13, T__13=14, T__14=15, T__15=16, T__16=17, 
+		T__17=18, T__18=19, T__19=20, T__20=21, T__21=22, T__22=23, T__23=24, 
+		T__24=25, T__25=26, T__26=27, T__27=28, T__28=29, T__29=30, T__30=31, 
+		T__31=32, T__32=33, T__33=34, T__34=35, T__35=36, T__36=37, T__37=38, 
+		T__38=39, T__39=40, T__40=41, T__41=42, T__42=43, T__43=44, T__44=45, 
+		T__45=46, T__46=47, T__47=48, T__48=49, T__49=50, T__50=51, T__51=52, 
+		T__52=53, T__53=54, T__54=55, T__55=56, T__56=57, T__57=58, T__58=59, 
+		T__59=60, T__60=61, T__61=62, T__62=63, T__63=64, T__64=65, T__65=66, 
+		T__66=67, T__67=68, T__68=69, T__69=70, T__70=71, T__71=72, T__72=73, 
+		T__73=74, T__74=75, T__75=76, T__76=77, T__77=78, T__78=79, T__79=80, 
+		T__80=81, T__81=82, T__82=83, T__83=84, T__84=85, T__85=86, T__86=87, 
+		T__87=88, T__88=89, T__89=90, T__90=91, T__91=92, T__92=93, T__93=94, 
+		T__94=95, T__95=96, T__96=97, T__97=98, T__98=99, T__99=100, STOP=101, 
+		LCURLY=102, RCURLY=103, PIPE=104, PERCENT=105, MINUS=106, TABLE=107, CELL_RANGE=108, 
+		COL_RANGE=109, ROW_RANGE=110, CELL=111, SHEET_PREFIX=112, HEXCOLOR=113, 
+		FLOAT=114, INT=115, STRING=116, WS=117, BLOCK_COMMENT=118, LINE_COMMENT=119, 
+		UNKNOWN_WORD=120;
 	public const int
-		RULE_file = 0, RULE_item = 1, RULE_range = 2, RULE_selection = 3, RULE_actions = 4, 
-		RULE_action = 5, RULE_boldAction = 6, RULE_fillAction = 7, RULE_widthAction = 8, 
-		RULE_borderAction = 9, RULE_color = 10, RULE_knownColor = 11, RULE_rgbColor = 12;
+		RULE_file = 0, RULE_item = 1, RULE_selection = 2, RULE_sheet = 3, RULE_ref = 4, 
+		RULE_tablePart = 5, RULE_filter = 6, RULE_element = 7, RULE_action = 8, 
+		RULE_cfRule = 9, RULE_condition = 10, RULE_compareOp = 11, RULE_operand = 12, 
+		RULE_datePeriod = 13, RULE_iconSet = 14, RULE_toggle = 15, RULE_hAlign = 16, 
+		RULE_vAlign = 17, RULE_borderSide = 18, RULE_borderStyle = 19, RULE_colorValue = 20, 
+		RULE_knownColor = 21, RULE_number = 22;
 	public static readonly string[] ruleNames = {
-		"file", "item", "range", "selection", "actions", "action", "boldAction", 
-		"fillAction", "widthAction", "borderAction", "color", "knownColor", "rgbColor"
+		"file", "item", "selection", "sheet", "ref", "tablePart", "filter", "element", 
+		"action", "cfRule", "condition", "compareOp", "operand", "datePeriod", 
+		"iconSet", "toggle", "hAlign", "vAlign", "borderSide", "borderStyle", 
+		"colorValue", "knownColor", "number"
 	};
 
 	private static readonly string[] _LiteralNames = {
-		null, "'bold'", "'fill'", "'width'", "'border'", "'red'", "'blue'", "'black'", 
-		"'rgb'", null, "':'", null, "'{'", "'}'", "','"
+		null, "'header'", "'body'", "'col'", "'column'", "'lastrow'", "'bold'", 
+		"'italic'", "'underline'", "'strike'", "'strikethrough'", "'wrap'", "'fill'", 
+		"'bg'", "'color'", "'fg'", "'font'", "'fontsize'", "'fs'", "'width'", 
+		"'w'", "'height'", "'h'", "'format'", "'fmt'", "'align'", "'valign'", 
+		"'border'", "'cond'", "'scale'", "'databar'", "'icons'", "'between'", 
+		"'notbetween'", "'contains'", "'notcontains'", "'begins'", "'ends'", "'blank'", 
+		"'nonblank'", "'error'", "'noerror'", "'top'", "'bottom'", "'aboveavg'", 
+		"'belowavg'", "'duplicate'", "'unique'", "'formula'", "'='", "'!='", "'<>'", 
+		"'<'", "'<='", "'>'", "'>='", "'today'", "'yesterday'", "'tomorrow'", 
+		"'last7days'", "'thisweek'", "'lastweek'", "'nextweek'", "'thismonth'", 
+		"'lastmonth'", "'nextmonth'", "'arrows'", "'flags'", "'traffic'", "'stars'", 
+		"'symbols'", "'ratings'", "'on'", "'off'", "'true'", "'false'", "'left'", 
+		"'center'", "'right'", "'middle'", "'all'", "'outline'", "'inside'", "'thin'", 
+		"'medium'", "'thick'", "'dashed'", "'dotted'", "'double'", "'none'", "'rgb'", 
+		"'red'", "'green'", "'blue'", "'black'", "'white'", "'gray'", "'grey'", 
+		"'orange'", "'yellow'", "'purple'", "'stop'", "'{'", "'}'", "'|'", "'%'", 
+		"'-'"
 	};
 	private static readonly string[] _SymbolicNames = {
-		null, null, null, null, null, null, null, null, null, "CELL", "COLON", 
-		"STRING", "LCURLY", "RCURLY", "COMMA", "INT", "WS"
+		null, null, null, null, null, null, null, null, null, null, null, null, 
+		null, null, null, null, null, null, null, null, null, null, null, null, 
+		null, null, null, null, null, null, null, null, null, null, null, null, 
+		null, null, null, null, null, null, null, null, null, null, null, null, 
+		null, null, null, null, null, null, null, null, null, null, null, null, 
+		null, null, null, null, null, null, null, null, null, null, null, null, 
+		null, null, null, null, null, null, null, null, null, null, null, null, 
+		null, null, null, null, null, null, null, null, null, null, null, null, 
+		null, null, null, null, null, "STOP", "LCURLY", "RCURLY", "PIPE", "PERCENT", 
+		"MINUS", "TABLE", "CELL_RANGE", "COL_RANGE", "ROW_RANGE", "CELL", "SHEET_PREFIX", 
+		"HEXCOLOR", "FLOAT", "INT", "STRING", "WS", "BLOCK_COMMENT", "LINE_COMMENT", 
+		"UNKNOWN_WORD"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -88,6 +134,7 @@ public partial class XlWriteParser : Parser {
 	}
 
 	public partial class FileContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Eof() { return GetToken(XlWriteParser.Eof, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ItemContext[] item() {
 			return GetRuleContexts<ItemContext>();
 		}
@@ -125,20 +172,22 @@ public partial class XlWriteParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 29;
+			State = 49;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			while (_la==CELL || _la==STRING) {
+			while (((((_la - 107)) & ~0x3f) == 0 && ((1L << (_la - 107)) & 575L) != 0)) {
 				{
 				{
-				State = 26;
+				State = 46;
 				item();
 				}
 				}
-				State = 31;
+				State = 51;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
+			State = 52;
+			Match(Eof);
 			}
 		}
 		catch (RecognitionException re) {
@@ -153,11 +202,23 @@ public partial class XlWriteParser : Parser {
 	}
 
 	public partial class ItemContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public SelectionContext selection() {
-			return GetRuleContext<SelectionContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public SelectionContext[] selection() {
+			return GetRuleContexts<SelectionContext>();
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ActionsContext actions() {
-			return GetRuleContext<ActionsContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public SelectionContext selection(int i) {
+			return GetRuleContext<SelectionContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public FilterContext[] filter() {
+			return GetRuleContexts<FilterContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public FilterContext filter(int i) {
+			return GetRuleContext<FilterContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ElementContext[] element() {
+			return GetRuleContexts<ElementContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ElementContext element(int i) {
+			return GetRuleContext<ElementContext>(i);
 		}
 		public ItemContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -186,68 +247,52 @@ public partial class XlWriteParser : Parser {
 	public ItemContext item() {
 		ItemContext _localctx = new ItemContext(Context, State);
 		EnterRule(_localctx, 2, RULE_item);
+		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 32;
-			selection();
-			State = 33;
-			actions();
+			State = 55;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			do {
+				{
+				{
+				State = 54;
+				selection();
+				}
+				}
+				State = 57;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+			} while ( ((((_la - 107)) & ~0x3f) == 0 && ((1L << (_la - 107)) & 575L) != 0) );
+			State = 62;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			while (_la==PIPE) {
+				{
+				{
+				State = 59;
+				filter();
+				}
+				}
+				State = 64;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
 			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class RangeContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] CELL() { return GetTokens(XlWriteParser.CELL); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CELL(int i) {
-			return GetToken(XlWriteParser.CELL, i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COLON() { return GetToken(XlWriteParser.COLON, 0); }
-		public RangeContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_range; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IXlWriteListener typedListener = listener as IXlWriteListener;
-			if (typedListener != null) typedListener.EnterRange(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IXlWriteListener typedListener = listener as IXlWriteListener;
-			if (typedListener != null) typedListener.ExitRange(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitRange(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public RangeContext range() {
-		RangeContext _localctx = new RangeContext(Context, State);
-		EnterRule(_localctx, 4, RULE_range);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 35;
-			Match(CELL);
-			State = 36;
-			Match(COLON);
-			State = 37;
-			Match(CELL);
+			State = 66;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			do {
+				{
+				{
+				State = 65;
+				element();
+				}
+				}
+				State = 68;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & 536870848L) != 0) );
 			}
 		}
 		catch (RecognitionException re) {
@@ -262,11 +307,12 @@ public partial class XlWriteParser : Parser {
 	}
 
 	public partial class SelectionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CELL() { return GetToken(XlWriteParser.CELL, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public RangeContext range() {
-			return GetRuleContext<RangeContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public RefContext @ref() {
+			return GetRuleContext<RefContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STRING() { return GetToken(XlWriteParser.STRING, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public SheetContext sheet() {
+			return GetRuleContext<SheetContext>(0);
+		}
 		public SelectionContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -293,37 +339,23 @@ public partial class XlWriteParser : Parser {
 	[RuleVersion(0)]
 	public SelectionContext selection() {
 		SelectionContext _localctx = new SelectionContext(Context, State);
-		EnterRule(_localctx, 6, RULE_selection);
+		EnterRule(_localctx, 4, RULE_selection);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 40;
+			State = 71;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			if (_la==STRING) {
+			if (_la==SHEET_PREFIX || _la==STRING) {
 				{
-				State = 39;
-				Match(STRING);
+				State = 70;
+				sheet();
 				}
 			}
 
-			State = 44;
-			ErrorHandler.Sync(this);
-			switch ( Interpreter.AdaptivePredict(TokenStream,2,Context) ) {
-			case 1:
-				{
-				State = 42;
-				Match(CELL);
-				}
-				break;
-			case 2:
-				{
-				State = 43;
-				range();
-				}
-				break;
-			}
+			State = 73;
+			@ref();
 			}
 		}
 		catch (RecognitionException re) {
@@ -337,80 +369,600 @@ public partial class XlWriteParser : Parser {
 		return _localctx;
 	}
 
-	public partial class ActionsContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LCURLY() { return GetToken(XlWriteParser.LCURLY, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RCURLY() { return GetToken(XlWriteParser.RCURLY, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ActionContext[] action() {
-			return GetRuleContexts<ActionContext>();
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ActionContext action(int i) {
-			return GetRuleContext<ActionContext>(i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] COMMA() { return GetTokens(XlWriteParser.COMMA); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMMA(int i) {
-			return GetToken(XlWriteParser.COMMA, i);
-		}
-		public ActionsContext(ParserRuleContext parent, int invokingState)
+	public partial class SheetContext : ParserRuleContext {
+		public SheetContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
-		public override int RuleIndex { get { return RULE_actions; } }
+		public override int RuleIndex { get { return RULE_sheet; } }
+	 
+		public SheetContext() { }
+		public virtual void CopyFrom(SheetContext context) {
+			base.CopyFrom(context);
+		}
+	}
+	public partial class PrefixSheetContext : SheetContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SHEET_PREFIX() { return GetToken(XlWriteParser.SHEET_PREFIX, 0); }
+		public PrefixSheetContext(SheetContext context) { CopyFrom(context); }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void EnterRule(IParseTreeListener listener) {
 			IXlWriteListener typedListener = listener as IXlWriteListener;
-			if (typedListener != null) typedListener.EnterActions(this);
+			if (typedListener != null) typedListener.EnterPrefixSheet(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void ExitRule(IParseTreeListener listener) {
 			IXlWriteListener typedListener = listener as IXlWriteListener;
-			if (typedListener != null) typedListener.ExitActions(this);
+			if (typedListener != null) typedListener.ExitPrefixSheet(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitActions(this);
+			if (typedVisitor != null) return typedVisitor.VisitPrefixSheet(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class QuotedSheetContext : SheetContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STRING() { return GetToken(XlWriteParser.STRING, 0); }
+		public QuotedSheetContext(SheetContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterQuotedSheet(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitQuotedSheet(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitQuotedSheet(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ActionsContext actions() {
-		ActionsContext _localctx = new ActionsContext(Context, State);
-		EnterRule(_localctx, 8, RULE_actions);
+	public SheetContext sheet() {
+		SheetContext _localctx = new SheetContext(Context, State);
+		EnterRule(_localctx, 6, RULE_sheet);
+		try {
+			State = 77;
+			ErrorHandler.Sync(this);
+			switch (TokenStream.LA(1)) {
+			case STRING:
+				_localctx = new QuotedSheetContext(_localctx);
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 75;
+				Match(STRING);
+				}
+				break;
+			case SHEET_PREFIX:
+				_localctx = new PrefixSheetContext(_localctx);
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 76;
+				Match(SHEET_PREFIX);
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class RefContext : ParserRuleContext {
+		public RefContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_ref; } }
+	 
+		public RefContext() { }
+		public virtual void CopyFrom(RefContext context) {
+			base.CopyFrom(context);
+		}
+	}
+	public partial class ColumnRangeRefContext : RefContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COL_RANGE() { return GetToken(XlWriteParser.COL_RANGE, 0); }
+		public ColumnRangeRefContext(RefContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterColumnRangeRef(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitColumnRangeRef(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitColumnRangeRef(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class RowRangeRefContext : RefContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ROW_RANGE() { return GetToken(XlWriteParser.ROW_RANGE, 0); }
+		public RowRangeRefContext(RefContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterRowRangeRef(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitRowRangeRef(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitRowRangeRef(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class CellRangeRefContext : RefContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CELL_RANGE() { return GetToken(XlWriteParser.CELL_RANGE, 0); }
+		public CellRangeRefContext(RefContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterCellRangeRef(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitCellRangeRef(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitCellRangeRef(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class CellRefContext : RefContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CELL() { return GetToken(XlWriteParser.CELL, 0); }
+		public CellRefContext(RefContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterCellRef(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitCellRef(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitCellRef(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class TableRefContext : RefContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TABLE() { return GetToken(XlWriteParser.TABLE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public TablePartContext tablePart() {
+			return GetRuleContext<TablePartContext>(0);
+		}
+		public TableRefContext(RefContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterTableRef(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitTableRef(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitTableRef(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public RefContext @ref() {
+		RefContext _localctx = new RefContext(Context, State);
+		EnterRule(_localctx, 8, RULE_ref);
 		int _la;
+		try {
+			State = 87;
+			ErrorHandler.Sync(this);
+			switch (TokenStream.LA(1)) {
+			case CELL:
+				_localctx = new CellRefContext(_localctx);
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 79;
+				Match(CELL);
+				}
+				break;
+			case CELL_RANGE:
+				_localctx = new CellRangeRefContext(_localctx);
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 80;
+				Match(CELL_RANGE);
+				}
+				break;
+			case COL_RANGE:
+				_localctx = new ColumnRangeRefContext(_localctx);
+				EnterOuterAlt(_localctx, 3);
+				{
+				State = 81;
+				Match(COL_RANGE);
+				}
+				break;
+			case ROW_RANGE:
+				_localctx = new RowRangeRefContext(_localctx);
+				EnterOuterAlt(_localctx, 4);
+				{
+				State = 82;
+				Match(ROW_RANGE);
+				}
+				break;
+			case TABLE:
+				_localctx = new TableRefContext(_localctx);
+				EnterOuterAlt(_localctx, 5);
+				{
+				State = 83;
+				Match(TABLE);
+				State = 85;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 62L) != 0)) {
+					{
+					State = 84;
+					tablePart();
+					}
+				}
+
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class TablePartContext : ParserRuleContext {
+		public TablePartContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_tablePart; } }
+	 
+		public TablePartContext() { }
+		public virtual void CopyFrom(TablePartContext context) {
+			base.CopyFrom(context);
+		}
+	}
+	public partial class TableBodyContext : TablePartContext {
+		public TableBodyContext(TablePartContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterTableBody(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitTableBody(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitTableBody(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class TableHeaderContext : TablePartContext {
+		public TableHeaderContext(TablePartContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterTableHeader(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitTableHeader(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitTableHeader(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class TableLastRowContext : TablePartContext {
+		public TableLastRowContext(TablePartContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterTableLastRow(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitTableLastRow(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitTableLastRow(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class TableColumnContext : TablePartContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STRING() { return GetToken(XlWriteParser.STRING, 0); }
+		public TableColumnContext(TablePartContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterTableColumn(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitTableColumn(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitTableColumn(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public TablePartContext tablePart() {
+		TablePartContext _localctx = new TablePartContext(Context, State);
+		EnterRule(_localctx, 10, RULE_tablePart);
+		int _la;
+		try {
+			State = 94;
+			ErrorHandler.Sync(this);
+			switch (TokenStream.LA(1)) {
+			case T__0:
+				_localctx = new TableHeaderContext(_localctx);
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 89;
+				Match(T__0);
+				}
+				break;
+			case T__1:
+				_localctx = new TableBodyContext(_localctx);
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 90;
+				Match(T__1);
+				}
+				break;
+			case T__2:
+			case T__3:
+				_localctx = new TableColumnContext(_localctx);
+				EnterOuterAlt(_localctx, 3);
+				{
+				State = 91;
+				_la = TokenStream.LA(1);
+				if ( !(_la==T__2 || _la==T__3) ) {
+				ErrorHandler.RecoverInline(this);
+				}
+				else {
+					ErrorHandler.ReportMatch(this);
+				    Consume();
+				}
+				State = 92;
+				Match(STRING);
+				}
+				break;
+			case T__4:
+				_localctx = new TableLastRowContext(_localctx);
+				EnterOuterAlt(_localctx, 4);
+				{
+				State = 93;
+				Match(T__4);
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class FilterContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PIPE() { return GetToken(XlWriteParser.PIPE, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ConditionContext condition() {
+			return GetRuleContext<ConditionContext>(0);
+		}
+		public FilterContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_filter; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterFilter(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitFilter(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitFilter(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public FilterContext filter() {
+		FilterContext _localctx = new FilterContext(Context, State);
+		EnterRule(_localctx, 12, RULE_filter);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 46;
-			Match(LCURLY);
-			State = 55;
-			ErrorHandler.Sync(this);
-			_la = TokenStream.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 30L) != 0)) {
-				{
-				State = 47;
-				action();
-				State = 52;
-				ErrorHandler.Sync(this);
-				_la = TokenStream.LA(1);
-				while (_la==COMMA) {
-					{
-					{
-					State = 48;
-					Match(COMMA);
-					State = 49;
-					action();
-					}
-					}
-					State = 54;
-					ErrorHandler.Sync(this);
-					_la = TokenStream.LA(1);
-				}
-				}
+			State = 96;
+			Match(PIPE);
+			State = 97;
+			condition();
 			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
 
-			State = 57;
-			Match(RCURLY);
+	public partial class ElementContext : ParserRuleContext {
+		public ElementContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_element; } }
+	 
+		public ElementContext() { }
+		public virtual void CopyFrom(ElementContext context) {
+			base.CopyFrom(context);
+		}
+	}
+	public partial class CfElementContext : ElementContext {
+		[System.Diagnostics.DebuggerNonUserCode] public CfRuleContext cfRule() {
+			return GetRuleContext<CfRuleContext>(0);
+		}
+		public CfElementContext(ElementContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterCfElement(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitCfElement(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitCfElement(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class ActionElementContext : ElementContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ActionContext action() {
+			return GetRuleContext<ActionContext>(0);
+		}
+		public ActionElementContext(ElementContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterActionElement(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitActionElement(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitActionElement(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ElementContext element() {
+		ElementContext _localctx = new ElementContext(Context, State);
+		EnterRule(_localctx, 14, RULE_element);
+		try {
+			State = 101;
+			ErrorHandler.Sync(this);
+			switch (TokenStream.LA(1)) {
+			case T__5:
+			case T__6:
+			case T__7:
+			case T__8:
+			case T__9:
+			case T__10:
+			case T__11:
+			case T__12:
+			case T__13:
+			case T__14:
+			case T__15:
+			case T__16:
+			case T__17:
+			case T__18:
+			case T__19:
+			case T__20:
+			case T__21:
+			case T__22:
+			case T__23:
+			case T__24:
+			case T__25:
+			case T__26:
+				_localctx = new ActionElementContext(_localctx);
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 99;
+				action();
+				}
+				break;
+			case T__27:
+				_localctx = new CfElementContext(_localctx);
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 100;
+				cfRule();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -436,205 +988,75 @@ public partial class XlWriteParser : Parser {
 			base.CopyFrom(context);
 		}
 	}
-	public partial class BorderActionExpContext : ActionContext {
-		[System.Diagnostics.DebuggerNonUserCode] public BorderActionContext borderAction() {
-			return GetRuleContext<BorderActionContext>(0);
-		}
-		public BorderActionExpContext(ActionContext context) { CopyFrom(context); }
+	public partial class NumberFormatActionContext : ActionContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STRING() { return GetToken(XlWriteParser.STRING, 0); }
+		public NumberFormatActionContext(ActionContext context) { CopyFrom(context); }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void EnterRule(IParseTreeListener listener) {
 			IXlWriteListener typedListener = listener as IXlWriteListener;
-			if (typedListener != null) typedListener.EnterBorderActionExp(this);
+			if (typedListener != null) typedListener.EnterNumberFormatAction(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void ExitRule(IParseTreeListener listener) {
 			IXlWriteListener typedListener = listener as IXlWriteListener;
-			if (typedListener != null) typedListener.ExitBorderActionExp(this);
+			if (typedListener != null) typedListener.ExitNumberFormatAction(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitBorderActionExp(this);
+			if (typedVisitor != null) return typedVisitor.VisitNumberFormatAction(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
-	public partial class WidthActionExpContext : ActionContext {
-		[System.Diagnostics.DebuggerNonUserCode] public WidthActionContext widthAction() {
-			return GetRuleContext<WidthActionContext>(0);
+	public partial class AlignActionContext : ActionContext {
+		[System.Diagnostics.DebuggerNonUserCode] public HAlignContext hAlign() {
+			return GetRuleContext<HAlignContext>(0);
 		}
-		public WidthActionExpContext(ActionContext context) { CopyFrom(context); }
+		public AlignActionContext(ActionContext context) { CopyFrom(context); }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void EnterRule(IParseTreeListener listener) {
 			IXlWriteListener typedListener = listener as IXlWriteListener;
-			if (typedListener != null) typedListener.EnterWidthActionExp(this);
+			if (typedListener != null) typedListener.EnterAlignAction(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void ExitRule(IParseTreeListener listener) {
 			IXlWriteListener typedListener = listener as IXlWriteListener;
-			if (typedListener != null) typedListener.ExitWidthActionExp(this);
+			if (typedListener != null) typedListener.ExitAlignAction(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitWidthActionExp(this);
+			if (typedVisitor != null) return typedVisitor.VisitAlignAction(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
-	public partial class FillActionExpContext : ActionContext {
-		[System.Diagnostics.DebuggerNonUserCode] public FillActionContext fillAction() {
-			return GetRuleContext<FillActionContext>(0);
+	public partial class VAlignActionContext : ActionContext {
+		[System.Diagnostics.DebuggerNonUserCode] public VAlignContext vAlign() {
+			return GetRuleContext<VAlignContext>(0);
 		}
-		public FillActionExpContext(ActionContext context) { CopyFrom(context); }
+		public VAlignActionContext(ActionContext context) { CopyFrom(context); }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void EnterRule(IParseTreeListener listener) {
 			IXlWriteListener typedListener = listener as IXlWriteListener;
-			if (typedListener != null) typedListener.EnterFillActionExp(this);
+			if (typedListener != null) typedListener.EnterVAlignAction(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void ExitRule(IParseTreeListener listener) {
 			IXlWriteListener typedListener = listener as IXlWriteListener;
-			if (typedListener != null) typedListener.ExitFillActionExp(this);
+			if (typedListener != null) typedListener.ExitVAlignAction(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitFillActionExp(this);
+			if (typedVisitor != null) return typedVisitor.VisitVAlignAction(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
-	public partial class BoldActionExpContext : ActionContext {
-		[System.Diagnostics.DebuggerNonUserCode] public BoldActionContext boldAction() {
-			return GetRuleContext<BoldActionContext>(0);
+	public partial class FillActionContext : ActionContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ColorValueContext colorValue() {
+			return GetRuleContext<ColorValueContext>(0);
 		}
-		public BoldActionExpContext(ActionContext context) { CopyFrom(context); }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IXlWriteListener typedListener = listener as IXlWriteListener;
-			if (typedListener != null) typedListener.EnterBoldActionExp(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IXlWriteListener typedListener = listener as IXlWriteListener;
-			if (typedListener != null) typedListener.ExitBoldActionExp(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitBoldActionExp(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public ActionContext action() {
-		ActionContext _localctx = new ActionContext(Context, State);
-		EnterRule(_localctx, 10, RULE_action);
-		try {
-			State = 63;
-			ErrorHandler.Sync(this);
-			switch (TokenStream.LA(1)) {
-			case T__1:
-				_localctx = new FillActionExpContext(_localctx);
-				EnterOuterAlt(_localctx, 1);
-				{
-				State = 59;
-				fillAction();
-				}
-				break;
-			case T__2:
-				_localctx = new WidthActionExpContext(_localctx);
-				EnterOuterAlt(_localctx, 2);
-				{
-				State = 60;
-				widthAction();
-				}
-				break;
-			case T__3:
-				_localctx = new BorderActionExpContext(_localctx);
-				EnterOuterAlt(_localctx, 3);
-				{
-				State = 61;
-				borderAction();
-				}
-				break;
-			case T__0:
-				_localctx = new BoldActionExpContext(_localctx);
-				EnterOuterAlt(_localctx, 4);
-				{
-				State = 62;
-				boldAction();
-				}
-				break;
-			default:
-				throw new NoViableAltException(this);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class BoldActionContext : ParserRuleContext {
-		public BoldActionContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_boldAction; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IXlWriteListener typedListener = listener as IXlWriteListener;
-			if (typedListener != null) typedListener.EnterBoldAction(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IXlWriteListener typedListener = listener as IXlWriteListener;
-			if (typedListener != null) typedListener.ExitBoldAction(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitBoldAction(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public BoldActionContext boldAction() {
-		BoldActionContext _localctx = new BoldActionContext(Context, State);
-		EnterRule(_localctx, 12, RULE_boldAction);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 65;
-			Match(T__0);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class FillActionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ColorContext color() {
-			return GetRuleContext<ColorContext>(0);
-		}
-		public FillActionContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_fillAction; } }
+		public FillActionContext(ActionContext context) { CopyFrom(context); }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void EnterRule(IParseTreeListener listener) {
 			IXlWriteListener typedListener = listener as IXlWriteListener;
@@ -652,38 +1074,33 @@ public partial class XlWriteParser : Parser {
 			else return visitor.VisitChildren(this);
 		}
 	}
-
-	[RuleVersion(0)]
-	public FillActionContext fillAction() {
-		FillActionContext _localctx = new FillActionContext(Context, State);
-		EnterRule(_localctx, 14, RULE_fillAction);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 67;
-			Match(T__1);
-			State = 68;
-			color();
-			}
+	public partial class FontSizeActionContext : ActionContext {
+		[System.Diagnostics.DebuggerNonUserCode] public NumberContext number() {
+			return GetRuleContext<NumberContext>(0);
 		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
+		public FontSizeActionContext(ActionContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterFontSizeAction(this);
 		}
-		finally {
-			ExitRule();
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitFontSizeAction(this);
 		}
-		return _localctx;
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitFontSizeAction(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
-
-	public partial class WidthActionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INT() { return GetToken(XlWriteParser.INT, 0); }
-		public WidthActionContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
+	public partial class WidthActionContext : ActionContext {
+		[System.Diagnostics.DebuggerNonUserCode] public NumberContext number() {
+			return GetRuleContext<NumberContext>(0);
 		}
-		public override int RuleIndex { get { return RULE_widthAction; } }
+		public WidthActionContext(ActionContext context) { CopyFrom(context); }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void EnterRule(IParseTreeListener listener) {
 			IXlWriteListener typedListener = listener as IXlWriteListener;
@@ -701,40 +1118,172 @@ public partial class XlWriteParser : Parser {
 			else return visitor.VisitChildren(this);
 		}
 	}
-
-	[RuleVersion(0)]
-	public WidthActionContext widthAction() {
-		WidthActionContext _localctx = new WidthActionContext(Context, State);
-		EnterRule(_localctx, 16, RULE_widthAction);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 70;
-			Match(T__2);
-			State = 71;
-			Match(INT);
-			}
+	public partial class BoldActionContext : ActionContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ToggleContext toggle() {
+			return GetRuleContext<ToggleContext>(0);
 		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
+		public BoldActionContext(ActionContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterBoldAction(this);
 		}
-		finally {
-			ExitRule();
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitBoldAction(this);
 		}
-		return _localctx;
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitBoldAction(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
-
-	public partial class BorderActionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ColorContext color() {
-			return GetRuleContext<ColorContext>(0);
+	public partial class HeightActionContext : ActionContext {
+		[System.Diagnostics.DebuggerNonUserCode] public NumberContext number() {
+			return GetRuleContext<NumberContext>(0);
 		}
-		public BorderActionContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
+		public HeightActionContext(ActionContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterHeightAction(this);
 		}
-		public override int RuleIndex { get { return RULE_borderAction; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitHeightAction(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitHeightAction(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class FontActionContext : ActionContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STRING() { return GetToken(XlWriteParser.STRING, 0); }
+		public FontActionContext(ActionContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterFontAction(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitFontAction(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitFontAction(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class FontColorActionContext : ActionContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ColorValueContext colorValue() {
+			return GetRuleContext<ColorValueContext>(0);
+		}
+		public FontColorActionContext(ActionContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterFontColorAction(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitFontColorAction(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitFontColorAction(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class StrikeActionContext : ActionContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ToggleContext toggle() {
+			return GetRuleContext<ToggleContext>(0);
+		}
+		public StrikeActionContext(ActionContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterStrikeAction(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitStrikeAction(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitStrikeAction(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class WrapActionContext : ActionContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ToggleContext toggle() {
+			return GetRuleContext<ToggleContext>(0);
+		}
+		public WrapActionContext(ActionContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterWrapAction(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitWrapAction(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitWrapAction(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class ItalicActionContext : ActionContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ToggleContext toggle() {
+			return GetRuleContext<ToggleContext>(0);
+		}
+		public ItalicActionContext(ActionContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterItalicAction(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitItalicAction(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitItalicAction(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class BorderActionContext : ActionContext {
+		[System.Diagnostics.DebuggerNonUserCode] public BorderSideContext[] borderSide() {
+			return GetRuleContexts<BorderSideContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public BorderSideContext borderSide(int i) {
+			return GetRuleContext<BorderSideContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public BorderStyleContext borderStyle() {
+			return GetRuleContext<BorderStyleContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ColorValueContext colorValue() {
+			return GetRuleContext<ColorValueContext>(0);
+		}
+		public BorderActionContext(ActionContext context) { CopyFrom(context); }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void EnterRule(IParseTreeListener listener) {
 			IXlWriteListener typedListener = listener as IXlWriteListener;
@@ -752,27 +1301,318 @@ public partial class XlWriteParser : Parser {
 			else return visitor.VisitChildren(this);
 		}
 	}
+	public partial class UnderlineActionContext : ActionContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ToggleContext toggle() {
+			return GetRuleContext<ToggleContext>(0);
+		}
+		public UnderlineActionContext(ActionContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterUnderlineAction(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitUnderlineAction(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitUnderlineAction(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
 
 	[RuleVersion(0)]
-	public BorderActionContext borderAction() {
-		BorderActionContext _localctx = new BorderActionContext(Context, State);
-		EnterRule(_localctx, 18, RULE_borderAction);
+	public ActionContext action() {
+		ActionContext _localctx = new ActionContext(Context, State);
+		EnterRule(_localctx, 16, RULE_action);
 		int _la;
 		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 73;
-			Match(T__3);
-			State = 75;
+			State = 154;
 			ErrorHandler.Sync(this);
-			_la = TokenStream.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 480L) != 0)) {
+			switch (TokenStream.LA(1)) {
+			case T__5:
+				_localctx = new BoldActionContext(_localctx);
+				EnterOuterAlt(_localctx, 1);
 				{
-				State = 74;
-				color();
+				State = 103;
+				Match(T__5);
+				State = 105;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+				if (((((_la - 72)) & ~0x3f) == 0 && ((1L << (_la - 72)) & 15L) != 0)) {
+					{
+					State = 104;
+					toggle();
+					}
 				}
-			}
 
+				}
+				break;
+			case T__6:
+				_localctx = new ItalicActionContext(_localctx);
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 107;
+				Match(T__6);
+				State = 109;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+				if (((((_la - 72)) & ~0x3f) == 0 && ((1L << (_la - 72)) & 15L) != 0)) {
+					{
+					State = 108;
+					toggle();
+					}
+				}
+
+				}
+				break;
+			case T__7:
+				_localctx = new UnderlineActionContext(_localctx);
+				EnterOuterAlt(_localctx, 3);
+				{
+				State = 111;
+				Match(T__7);
+				State = 113;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+				if (((((_la - 72)) & ~0x3f) == 0 && ((1L << (_la - 72)) & 15L) != 0)) {
+					{
+					State = 112;
+					toggle();
+					}
+				}
+
+				}
+				break;
+			case T__8:
+			case T__9:
+				_localctx = new StrikeActionContext(_localctx);
+				EnterOuterAlt(_localctx, 4);
+				{
+				State = 115;
+				_la = TokenStream.LA(1);
+				if ( !(_la==T__8 || _la==T__9) ) {
+				ErrorHandler.RecoverInline(this);
+				}
+				else {
+					ErrorHandler.ReportMatch(this);
+				    Consume();
+				}
+				State = 117;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+				if (((((_la - 72)) & ~0x3f) == 0 && ((1L << (_la - 72)) & 15L) != 0)) {
+					{
+					State = 116;
+					toggle();
+					}
+				}
+
+				}
+				break;
+			case T__10:
+				_localctx = new WrapActionContext(_localctx);
+				EnterOuterAlt(_localctx, 5);
+				{
+				State = 119;
+				Match(T__10);
+				State = 121;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+				if (((((_la - 72)) & ~0x3f) == 0 && ((1L << (_la - 72)) & 15L) != 0)) {
+					{
+					State = 120;
+					toggle();
+					}
+				}
+
+				}
+				break;
+			case T__11:
+			case T__12:
+				_localctx = new FillActionContext(_localctx);
+				EnterOuterAlt(_localctx, 6);
+				{
+				State = 123;
+				_la = TokenStream.LA(1);
+				if ( !(_la==T__11 || _la==T__12) ) {
+				ErrorHandler.RecoverInline(this);
+				}
+				else {
+					ErrorHandler.ReportMatch(this);
+				    Consume();
+				}
+				State = 124;
+				colorValue();
+				}
+				break;
+			case T__13:
+			case T__14:
+				_localctx = new FontColorActionContext(_localctx);
+				EnterOuterAlt(_localctx, 7);
+				{
+				State = 125;
+				_la = TokenStream.LA(1);
+				if ( !(_la==T__13 || _la==T__14) ) {
+				ErrorHandler.RecoverInline(this);
+				}
+				else {
+					ErrorHandler.ReportMatch(this);
+				    Consume();
+				}
+				State = 126;
+				colorValue();
+				}
+				break;
+			case T__15:
+				_localctx = new FontActionContext(_localctx);
+				EnterOuterAlt(_localctx, 8);
+				{
+				State = 127;
+				Match(T__15);
+				State = 128;
+				Match(STRING);
+				}
+				break;
+			case T__16:
+			case T__17:
+				_localctx = new FontSizeActionContext(_localctx);
+				EnterOuterAlt(_localctx, 9);
+				{
+				State = 129;
+				_la = TokenStream.LA(1);
+				if ( !(_la==T__16 || _la==T__17) ) {
+				ErrorHandler.RecoverInline(this);
+				}
+				else {
+					ErrorHandler.ReportMatch(this);
+				    Consume();
+				}
+				State = 130;
+				number();
+				}
+				break;
+			case T__18:
+			case T__19:
+				_localctx = new WidthActionContext(_localctx);
+				EnterOuterAlt(_localctx, 10);
+				{
+				State = 131;
+				_la = TokenStream.LA(1);
+				if ( !(_la==T__18 || _la==T__19) ) {
+				ErrorHandler.RecoverInline(this);
+				}
+				else {
+					ErrorHandler.ReportMatch(this);
+				    Consume();
+				}
+				State = 132;
+				number();
+				}
+				break;
+			case T__20:
+			case T__21:
+				_localctx = new HeightActionContext(_localctx);
+				EnterOuterAlt(_localctx, 11);
+				{
+				State = 133;
+				_la = TokenStream.LA(1);
+				if ( !(_la==T__20 || _la==T__21) ) {
+				ErrorHandler.RecoverInline(this);
+				}
+				else {
+					ErrorHandler.ReportMatch(this);
+				    Consume();
+				}
+				State = 134;
+				number();
+				}
+				break;
+			case T__22:
+			case T__23:
+				_localctx = new NumberFormatActionContext(_localctx);
+				EnterOuterAlt(_localctx, 12);
+				{
+				State = 135;
+				_la = TokenStream.LA(1);
+				if ( !(_la==T__22 || _la==T__23) ) {
+				ErrorHandler.RecoverInline(this);
+				}
+				else {
+					ErrorHandler.ReportMatch(this);
+				    Consume();
+				}
+				State = 136;
+				Match(STRING);
+				}
+				break;
+			case T__24:
+				_localctx = new AlignActionContext(_localctx);
+				EnterOuterAlt(_localctx, 13);
+				{
+				State = 137;
+				Match(T__24);
+				State = 138;
+				hAlign();
+				}
+				break;
+			case T__25:
+				_localctx = new VAlignActionContext(_localctx);
+				EnterOuterAlt(_localctx, 14);
+				{
+				State = 139;
+				Match(T__25);
+				State = 140;
+				vAlign();
+				}
+				break;
+			case T__26:
+				_localctx = new BorderActionContext(_localctx);
+				EnterOuterAlt(_localctx, 15);
+				{
+				State = 141;
+				Match(T__26);
+				State = 145;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+				while (((((_la - 42)) & ~0x3f) == 0 && ((1L << (_la - 42)) & 2010044694531L) != 0)) {
+					{
+					{
+					State = 142;
+					borderSide();
+					}
+					}
+					State = 147;
+					ErrorHandler.Sync(this);
+					_la = TokenStream.LA(1);
+				}
+				State = 149;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+				if (((((_la - 83)) & ~0x3f) == 0 && ((1L << (_la - 83)) & 127L) != 0)) {
+					{
+					State = 148;
+					borderStyle();
+					}
+				}
+
+				State = 152;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+				if (((((_la - 90)) & ~0x3f) == 0 && ((1L << (_la - 90)) & 8390655L) != 0)) {
+					{
+					State = 151;
+					colorValue();
+					}
+				}
+
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -786,57 +1626,1544 @@ public partial class XlWriteParser : Parser {
 		return _localctx;
 	}
 
-	public partial class ColorContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public RgbColorContext rgbColor() {
-			return GetRuleContext<RgbColorContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public KnownColorContext knownColor() {
-			return GetRuleContext<KnownColorContext>(0);
-		}
-		public ColorContext(ParserRuleContext parent, int invokingState)
+	public partial class CfRuleContext : ParserRuleContext {
+		public CfRuleContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
-		public override int RuleIndex { get { return RULE_color; } }
+		public override int RuleIndex { get { return RULE_cfRule; } }
+	 
+		public CfRuleContext() { }
+		public virtual void CopyFrom(CfRuleContext context) {
+			base.CopyFrom(context);
+		}
+	}
+	public partial class CondRuleContext : CfRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ConditionContext condition() {
+			return GetRuleContext<ConditionContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LCURLY() { return GetToken(XlWriteParser.LCURLY, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RCURLY() { return GetToken(XlWriteParser.RCURLY, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ActionContext[] action() {
+			return GetRuleContexts<ActionContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ActionContext action(int i) {
+			return GetRuleContext<ActionContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STOP() { return GetToken(XlWriteParser.STOP, 0); }
+		public CondRuleContext(CfRuleContext context) { CopyFrom(context); }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void EnterRule(IParseTreeListener listener) {
 			IXlWriteListener typedListener = listener as IXlWriteListener;
-			if (typedListener != null) typedListener.EnterColor(this);
+			if (typedListener != null) typedListener.EnterCondRule(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void ExitRule(IParseTreeListener listener) {
 			IXlWriteListener typedListener = listener as IXlWriteListener;
-			if (typedListener != null) typedListener.ExitColor(this);
+			if (typedListener != null) typedListener.ExitCondRule(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitColor(this);
+			if (typedVisitor != null) return typedVisitor.VisitCondRule(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class DataBarRuleContext : CfRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ColorValueContext colorValue() {
+			return GetRuleContext<ColorValueContext>(0);
+		}
+		public DataBarRuleContext(CfRuleContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterDataBarRule(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitDataBarRule(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitDataBarRule(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class ScaleRuleContext : CfRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ColorValueContext[] colorValue() {
+			return GetRuleContexts<ColorValueContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ColorValueContext colorValue(int i) {
+			return GetRuleContext<ColorValueContext>(i);
+		}
+		public ScaleRuleContext(CfRuleContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterScaleRule(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitScaleRule(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitScaleRule(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class IconsRuleContext : CfRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public IconSetContext iconSet() {
+			return GetRuleContext<IconSetContext>(0);
+		}
+		public IconsRuleContext(CfRuleContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterIconsRule(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitIconsRule(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitIconsRule(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ColorContext color() {
-		ColorContext _localctx = new ColorContext(Context, State);
-		EnterRule(_localctx, 20, RULE_color);
+	public CfRuleContext cfRule() {
+		CfRuleContext _localctx = new CfRuleContext(Context, State);
+		EnterRule(_localctx, 18, RULE_cfRule);
+		int _la;
 		try {
-			State = 79;
+			State = 182;
 			ErrorHandler.Sync(this);
-			switch (TokenStream.LA(1)) {
-			case T__7:
+			switch ( Interpreter.AdaptivePredict(TokenStream,22,Context) ) {
+			case 1:
+				_localctx = new CondRuleContext(_localctx);
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 77;
-				rgbColor();
+				State = 156;
+				Match(T__27);
+				State = 157;
+				condition();
+				State = 158;
+				Match(LCURLY);
+				State = 160;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+				do {
+					{
+					{
+					State = 159;
+					action();
+					}
+					}
+					State = 162;
+					ErrorHandler.Sync(this);
+					_la = TokenStream.LA(1);
+				} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & 268435392L) != 0) );
+				State = 165;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+				if (_la==STOP) {
+					{
+					State = 164;
+					Match(STOP);
+					}
+				}
+
+				State = 167;
+				Match(RCURLY);
 				}
 				break;
-			case T__4:
-			case T__5:
-			case T__6:
+			case 2:
+				_localctx = new ScaleRuleContext(_localctx);
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 78;
+				State = 169;
+				Match(T__27);
+				State = 170;
+				Match(T__28);
+				State = 171;
+				colorValue();
+				State = 172;
+				colorValue();
+				State = 174;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+				if (((((_la - 90)) & ~0x3f) == 0 && ((1L << (_la - 90)) & 8390655L) != 0)) {
+					{
+					State = 173;
+					colorValue();
+					}
+				}
+
+				}
+				break;
+			case 3:
+				_localctx = new DataBarRuleContext(_localctx);
+				EnterOuterAlt(_localctx, 3);
+				{
+				State = 176;
+				Match(T__27);
+				State = 177;
+				Match(T__29);
+				State = 178;
+				colorValue();
+				}
+				break;
+			case 4:
+				_localctx = new IconsRuleContext(_localctx);
+				EnterOuterAlt(_localctx, 4);
+				{
+				State = 179;
+				Match(T__27);
+				State = 180;
+				Match(T__30);
+				State = 181;
+				iconSet();
+				}
+				break;
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class ConditionContext : ParserRuleContext {
+		public ConditionContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_condition; } }
+	 
+		public ConditionContext() { }
+		public virtual void CopyFrom(ConditionContext context) {
+			base.CopyFrom(context);
+		}
+	}
+	public partial class DuplicateCondContext : ConditionContext {
+		public DuplicateCondContext(ConditionContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterDuplicateCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitDuplicateCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitDuplicateCond(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class ContainsCondContext : ConditionContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STRING() { return GetToken(XlWriteParser.STRING, 0); }
+		public ContainsCondContext(ConditionContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterContainsCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitContainsCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitContainsCond(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class ErrorCondContext : ConditionContext {
+		public ErrorCondContext(ConditionContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterErrorCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitErrorCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitErrorCond(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class TopCondContext : ConditionContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INT() { return GetToken(XlWriteParser.INT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PERCENT() { return GetToken(XlWriteParser.PERCENT, 0); }
+		public TopCondContext(ConditionContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterTopCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitTopCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitTopCond(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class CompareCondContext : ConditionContext {
+		[System.Diagnostics.DebuggerNonUserCode] public CompareOpContext compareOp() {
+			return GetRuleContext<CompareOpContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public OperandContext operand() {
+			return GetRuleContext<OperandContext>(0);
+		}
+		public CompareCondContext(ConditionContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterCompareCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitCompareCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitCompareCond(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class NotBetweenCondContext : ConditionContext {
+		[System.Diagnostics.DebuggerNonUserCode] public OperandContext[] operand() {
+			return GetRuleContexts<OperandContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public OperandContext operand(int i) {
+			return GetRuleContext<OperandContext>(i);
+		}
+		public NotBetweenCondContext(ConditionContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterNotBetweenCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitNotBetweenCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitNotBetweenCond(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class AboveAvgCondContext : ConditionContext {
+		public AboveAvgCondContext(ConditionContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterAboveAvgCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitAboveAvgCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitAboveAvgCond(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class BeginsCondContext : ConditionContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STRING() { return GetToken(XlWriteParser.STRING, 0); }
+		public BeginsCondContext(ConditionContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterBeginsCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitBeginsCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitBeginsCond(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class EndsCondContext : ConditionContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STRING() { return GetToken(XlWriteParser.STRING, 0); }
+		public EndsCondContext(ConditionContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterEndsCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitEndsCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitEndsCond(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class BottomCondContext : ConditionContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INT() { return GetToken(XlWriteParser.INT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PERCENT() { return GetToken(XlWriteParser.PERCENT, 0); }
+		public BottomCondContext(ConditionContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterBottomCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitBottomCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitBottomCond(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class BlankCondContext : ConditionContext {
+		public BlankCondContext(ConditionContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterBlankCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitBlankCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitBlankCond(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class UniqueCondContext : ConditionContext {
+		public UniqueCondContext(ConditionContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterUniqueCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitUniqueCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitUniqueCond(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class BetweenCondContext : ConditionContext {
+		[System.Diagnostics.DebuggerNonUserCode] public OperandContext[] operand() {
+			return GetRuleContexts<OperandContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public OperandContext operand(int i) {
+			return GetRuleContext<OperandContext>(i);
+		}
+		public BetweenCondContext(ConditionContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterBetweenCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitBetweenCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitBetweenCond(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class NotContainsCondContext : ConditionContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STRING() { return GetToken(XlWriteParser.STRING, 0); }
+		public NotContainsCondContext(ConditionContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterNotContainsCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitNotContainsCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitNotContainsCond(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class BelowAvgCondContext : ConditionContext {
+		public BelowAvgCondContext(ConditionContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterBelowAvgCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitBelowAvgCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitBelowAvgCond(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class NonBlankCondContext : ConditionContext {
+		public NonBlankCondContext(ConditionContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterNonBlankCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitNonBlankCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitNonBlankCond(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class NoErrorCondContext : ConditionContext {
+		public NoErrorCondContext(ConditionContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterNoErrorCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitNoErrorCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitNoErrorCond(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class DateCondContext : ConditionContext {
+		[System.Diagnostics.DebuggerNonUserCode] public DatePeriodContext datePeriod() {
+			return GetRuleContext<DatePeriodContext>(0);
+		}
+		public DateCondContext(ConditionContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterDateCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitDateCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitDateCond(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class FormulaCondContext : ConditionContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STRING() { return GetToken(XlWriteParser.STRING, 0); }
+		public FormulaCondContext(ConditionContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterFormulaCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitFormulaCond(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitFormulaCond(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ConditionContext condition() {
+		ConditionContext _localctx = new ConditionContext(Context, State);
+		EnterRule(_localctx, 20, RULE_condition);
+		int _la;
+		try {
+			State = 224;
+			ErrorHandler.Sync(this);
+			switch (TokenStream.LA(1)) {
+			case T__48:
+			case T__49:
+			case T__50:
+			case T__51:
+			case T__52:
+			case T__53:
+			case T__54:
+				_localctx = new CompareCondContext(_localctx);
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 184;
+				compareOp();
+				State = 185;
+				operand();
+				}
+				break;
+			case T__31:
+				_localctx = new BetweenCondContext(_localctx);
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 187;
+				Match(T__31);
+				State = 188;
+				operand();
+				State = 189;
+				operand();
+				}
+				break;
+			case T__32:
+				_localctx = new NotBetweenCondContext(_localctx);
+				EnterOuterAlt(_localctx, 3);
+				{
+				State = 191;
+				Match(T__32);
+				State = 192;
+				operand();
+				State = 193;
+				operand();
+				}
+				break;
+			case T__33:
+				_localctx = new ContainsCondContext(_localctx);
+				EnterOuterAlt(_localctx, 4);
+				{
+				State = 195;
+				Match(T__33);
+				State = 196;
+				Match(STRING);
+				}
+				break;
+			case T__34:
+				_localctx = new NotContainsCondContext(_localctx);
+				EnterOuterAlt(_localctx, 5);
+				{
+				State = 197;
+				Match(T__34);
+				State = 198;
+				Match(STRING);
+				}
+				break;
+			case T__35:
+				_localctx = new BeginsCondContext(_localctx);
+				EnterOuterAlt(_localctx, 6);
+				{
+				State = 199;
+				Match(T__35);
+				State = 200;
+				Match(STRING);
+				}
+				break;
+			case T__36:
+				_localctx = new EndsCondContext(_localctx);
+				EnterOuterAlt(_localctx, 7);
+				{
+				State = 201;
+				Match(T__36);
+				State = 202;
+				Match(STRING);
+				}
+				break;
+			case T__37:
+				_localctx = new BlankCondContext(_localctx);
+				EnterOuterAlt(_localctx, 8);
+				{
+				State = 203;
+				Match(T__37);
+				}
+				break;
+			case T__38:
+				_localctx = new NonBlankCondContext(_localctx);
+				EnterOuterAlt(_localctx, 9);
+				{
+				State = 204;
+				Match(T__38);
+				}
+				break;
+			case T__39:
+				_localctx = new ErrorCondContext(_localctx);
+				EnterOuterAlt(_localctx, 10);
+				{
+				State = 205;
+				Match(T__39);
+				}
+				break;
+			case T__40:
+				_localctx = new NoErrorCondContext(_localctx);
+				EnterOuterAlt(_localctx, 11);
+				{
+				State = 206;
+				Match(T__40);
+				}
+				break;
+			case T__41:
+				_localctx = new TopCondContext(_localctx);
+				EnterOuterAlt(_localctx, 12);
+				{
+				State = 207;
+				Match(T__41);
+				State = 208;
+				Match(INT);
+				State = 210;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+				if (_la==PERCENT) {
+					{
+					State = 209;
+					Match(PERCENT);
+					}
+				}
+
+				}
+				break;
+			case T__42:
+				_localctx = new BottomCondContext(_localctx);
+				EnterOuterAlt(_localctx, 13);
+				{
+				State = 212;
+				Match(T__42);
+				State = 213;
+				Match(INT);
+				State = 215;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+				if (_la==PERCENT) {
+					{
+					State = 214;
+					Match(PERCENT);
+					}
+				}
+
+				}
+				break;
+			case T__43:
+				_localctx = new AboveAvgCondContext(_localctx);
+				EnterOuterAlt(_localctx, 14);
+				{
+				State = 217;
+				Match(T__43);
+				}
+				break;
+			case T__44:
+				_localctx = new BelowAvgCondContext(_localctx);
+				EnterOuterAlt(_localctx, 15);
+				{
+				State = 218;
+				Match(T__44);
+				}
+				break;
+			case T__45:
+				_localctx = new DuplicateCondContext(_localctx);
+				EnterOuterAlt(_localctx, 16);
+				{
+				State = 219;
+				Match(T__45);
+				}
+				break;
+			case T__46:
+				_localctx = new UniqueCondContext(_localctx);
+				EnterOuterAlt(_localctx, 17);
+				{
+				State = 220;
+				Match(T__46);
+				}
+				break;
+			case T__55:
+			case T__56:
+			case T__57:
+			case T__58:
+			case T__59:
+			case T__60:
+			case T__61:
+			case T__62:
+			case T__63:
+			case T__64:
+				_localctx = new DateCondContext(_localctx);
+				EnterOuterAlt(_localctx, 18);
+				{
+				State = 221;
+				datePeriod();
+				}
+				break;
+			case T__47:
+				_localctx = new FormulaCondContext(_localctx);
+				EnterOuterAlt(_localctx, 19);
+				{
+				State = 222;
+				Match(T__47);
+				State = 223;
+				Match(STRING);
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class CompareOpContext : ParserRuleContext {
+		public CompareOpContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_compareOp; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterCompareOp(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitCompareOp(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitCompareOp(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public CompareOpContext compareOp() {
+		CompareOpContext _localctx = new CompareOpContext(Context, State);
+		EnterRule(_localctx, 22, RULE_compareOp);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 226;
+			_la = TokenStream.LA(1);
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 71494644084506624L) != 0)) ) {
+			ErrorHandler.RecoverInline(this);
+			}
+			else {
+				ErrorHandler.ReportMatch(this);
+			    Consume();
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class OperandContext : ParserRuleContext {
+		public OperandContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_operand; } }
+	 
+		public OperandContext() { }
+		public virtual void CopyFrom(OperandContext context) {
+			base.CopyFrom(context);
+		}
+	}
+	public partial class CellOperandContext : OperandContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CELL() { return GetToken(XlWriteParser.CELL, 0); }
+		public CellOperandContext(OperandContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterCellOperand(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitCellOperand(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitCellOperand(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class StringOperandContext : OperandContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STRING() { return GetToken(XlWriteParser.STRING, 0); }
+		public StringOperandContext(OperandContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterStringOperand(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitStringOperand(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitStringOperand(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class NumberOperandContext : OperandContext {
+		[System.Diagnostics.DebuggerNonUserCode] public NumberContext number() {
+			return GetRuleContext<NumberContext>(0);
+		}
+		public NumberOperandContext(OperandContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterNumberOperand(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitNumberOperand(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitNumberOperand(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public OperandContext operand() {
+		OperandContext _localctx = new OperandContext(Context, State);
+		EnterRule(_localctx, 24, RULE_operand);
+		try {
+			State = 231;
+			ErrorHandler.Sync(this);
+			switch (TokenStream.LA(1)) {
+			case MINUS:
+			case FLOAT:
+			case INT:
+				_localctx = new NumberOperandContext(_localctx);
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 228;
+				number();
+				}
+				break;
+			case STRING:
+				_localctx = new StringOperandContext(_localctx);
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 229;
+				Match(STRING);
+				}
+				break;
+			case CELL:
+				_localctx = new CellOperandContext(_localctx);
+				EnterOuterAlt(_localctx, 3);
+				{
+				State = 230;
+				Match(CELL);
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class DatePeriodContext : ParserRuleContext {
+		public DatePeriodContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_datePeriod; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterDatePeriod(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitDatePeriod(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitDatePeriod(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public DatePeriodContext datePeriod() {
+		DatePeriodContext _localctx = new DatePeriodContext(Context, State);
+		EnterRule(_localctx, 26, RULE_datePeriod);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 233;
+			_la = TokenStream.LA(1);
+			if ( !(((((_la - 56)) & ~0x3f) == 0 && ((1L << (_la - 56)) & 1023L) != 0)) ) {
+			ErrorHandler.RecoverInline(this);
+			}
+			else {
+				ErrorHandler.ReportMatch(this);
+			    Consume();
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class IconSetContext : ParserRuleContext {
+		public IconSetContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_iconSet; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterIconSet(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitIconSet(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitIconSet(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public IconSetContext iconSet() {
+		IconSetContext _localctx = new IconSetContext(Context, State);
+		EnterRule(_localctx, 28, RULE_iconSet);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 235;
+			_la = TokenStream.LA(1);
+			if ( !(((((_la - 66)) & ~0x3f) == 0 && ((1L << (_la - 66)) & 63L) != 0)) ) {
+			ErrorHandler.RecoverInline(this);
+			}
+			else {
+				ErrorHandler.ReportMatch(this);
+			    Consume();
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class ToggleContext : ParserRuleContext {
+		public ToggleContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_toggle; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterToggle(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitToggle(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitToggle(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ToggleContext toggle() {
+		ToggleContext _localctx = new ToggleContext(Context, State);
+		EnterRule(_localctx, 30, RULE_toggle);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 237;
+			_la = TokenStream.LA(1);
+			if ( !(((((_la - 72)) & ~0x3f) == 0 && ((1L << (_la - 72)) & 15L) != 0)) ) {
+			ErrorHandler.RecoverInline(this);
+			}
+			else {
+				ErrorHandler.ReportMatch(this);
+			    Consume();
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class HAlignContext : ParserRuleContext {
+		public HAlignContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_hAlign; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterHAlign(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitHAlign(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitHAlign(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public HAlignContext hAlign() {
+		HAlignContext _localctx = new HAlignContext(Context, State);
+		EnterRule(_localctx, 32, RULE_hAlign);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 239;
+			_la = TokenStream.LA(1);
+			if ( !(((((_la - 76)) & ~0x3f) == 0 && ((1L << (_la - 76)) & 7L) != 0)) ) {
+			ErrorHandler.RecoverInline(this);
+			}
+			else {
+				ErrorHandler.ReportMatch(this);
+			    Consume();
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class VAlignContext : ParserRuleContext {
+		public VAlignContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_vAlign; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterVAlign(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitVAlign(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitVAlign(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public VAlignContext vAlign() {
+		VAlignContext _localctx = new VAlignContext(Context, State);
+		EnterRule(_localctx, 34, RULE_vAlign);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 241;
+			_la = TokenStream.LA(1);
+			if ( !(((((_la - 42)) & ~0x3f) == 0 && ((1L << (_la - 42)) & 171798691843L) != 0)) ) {
+			ErrorHandler.RecoverInline(this);
+			}
+			else {
+				ErrorHandler.ReportMatch(this);
+			    Consume();
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class BorderSideContext : ParserRuleContext {
+		public BorderSideContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_borderSide; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterBorderSide(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitBorderSide(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitBorderSide(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public BorderSideContext borderSide() {
+		BorderSideContext _localctx = new BorderSideContext(Context, State);
+		EnterRule(_localctx, 36, RULE_borderSide);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 243;
+			_la = TokenStream.LA(1);
+			if ( !(((((_la - 42)) & ~0x3f) == 0 && ((1L << (_la - 42)) & 2010044694531L) != 0)) ) {
+			ErrorHandler.RecoverInline(this);
+			}
+			else {
+				ErrorHandler.ReportMatch(this);
+			    Consume();
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class BorderStyleContext : ParserRuleContext {
+		public BorderStyleContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_borderStyle; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterBorderStyle(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitBorderStyle(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitBorderStyle(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public BorderStyleContext borderStyle() {
+		BorderStyleContext _localctx = new BorderStyleContext(Context, State);
+		EnterRule(_localctx, 38, RULE_borderStyle);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 245;
+			_la = TokenStream.LA(1);
+			if ( !(((((_la - 83)) & ~0x3f) == 0 && ((1L << (_la - 83)) & 127L) != 0)) ) {
+			ErrorHandler.RecoverInline(this);
+			}
+			else {
+				ErrorHandler.ReportMatch(this);
+			    Consume();
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class ColorValueContext : ParserRuleContext {
+		public ColorValueContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_colorValue; } }
+	 
+		public ColorValueContext() { }
+		public virtual void CopyFrom(ColorValueContext context) {
+			base.CopyFrom(context);
+		}
+	}
+	public partial class NamedColorContext : ColorValueContext {
+		[System.Diagnostics.DebuggerNonUserCode] public KnownColorContext knownColor() {
+			return GetRuleContext<KnownColorContext>(0);
+		}
+		public NamedColorContext(ColorValueContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterNamedColor(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitNamedColor(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitNamedColor(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class RgbColorContext : ColorValueContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] INT() { return GetTokens(XlWriteParser.INT); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INT(int i) {
+			return GetToken(XlWriteParser.INT, i);
+		}
+		public RgbColorContext(ColorValueContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterRgbColor(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitRgbColor(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitRgbColor(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+	public partial class HexColorContext : ColorValueContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode HEXCOLOR() { return GetToken(XlWriteParser.HEXCOLOR, 0); }
+		public HexColorContext(ColorValueContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.EnterHexColor(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IXlWriteListener typedListener = listener as IXlWriteListener;
+			if (typedListener != null) typedListener.ExitHexColor(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitHexColor(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ColorValueContext colorValue() {
+		ColorValueContext _localctx = new ColorValueContext(Context, State);
+		EnterRule(_localctx, 40, RULE_colorValue);
+		try {
+			State = 253;
+			ErrorHandler.Sync(this);
+			switch (TokenStream.LA(1)) {
+			case HEXCOLOR:
+				_localctx = new HexColorContext(_localctx);
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 247;
+				Match(HEXCOLOR);
+				}
+				break;
+			case T__89:
+				_localctx = new RgbColorContext(_localctx);
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 248;
+				Match(T__89);
+				State = 249;
+				Match(INT);
+				State = 250;
+				Match(INT);
+				State = 251;
+				Match(INT);
+				}
+				break;
+			case T__90:
+			case T__91:
+			case T__92:
+			case T__93:
+			case T__94:
+			case T__95:
+			case T__96:
+			case T__97:
+			case T__98:
+			case T__99:
+				_localctx = new NamedColorContext(_localctx);
+				EnterOuterAlt(_localctx, 3);
+				{
+				State = 252;
 				knownColor();
 				}
 				break;
@@ -882,14 +3209,14 @@ public partial class XlWriteParser : Parser {
 	[RuleVersion(0)]
 	public KnownColorContext knownColor() {
 		KnownColorContext _localctx = new KnownColorContext(Context, State);
-		EnterRule(_localctx, 22, RULE_knownColor);
+		EnterRule(_localctx, 42, RULE_knownColor);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 81;
+			State = 255;
 			_la = TokenStream.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 224L) != 0)) ) {
+			if ( !(((((_la - 91)) & ~0x3f) == 0 && ((1L << (_la - 91)) & 1023L) != 0)) ) {
 			ErrorHandler.RecoverInline(this);
 			}
 			else {
@@ -909,49 +3236,60 @@ public partial class XlWriteParser : Parser {
 		return _localctx;
 	}
 
-	public partial class RgbColorContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] INT() { return GetTokens(XlWriteParser.INT); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INT(int i) {
-			return GetToken(XlWriteParser.INT, i);
-		}
-		public RgbColorContext(ParserRuleContext parent, int invokingState)
+	public partial class NumberContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INT() { return GetToken(XlWriteParser.INT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FLOAT() { return GetToken(XlWriteParser.FLOAT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MINUS() { return GetToken(XlWriteParser.MINUS, 0); }
+		public NumberContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
-		public override int RuleIndex { get { return RULE_rgbColor; } }
+		public override int RuleIndex { get { return RULE_number; } }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void EnterRule(IParseTreeListener listener) {
 			IXlWriteListener typedListener = listener as IXlWriteListener;
-			if (typedListener != null) typedListener.EnterRgbColor(this);
+			if (typedListener != null) typedListener.EnterNumber(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void ExitRule(IParseTreeListener listener) {
 			IXlWriteListener typedListener = listener as IXlWriteListener;
-			if (typedListener != null) typedListener.ExitRgbColor(this);
+			if (typedListener != null) typedListener.ExitNumber(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
 			IXlWriteVisitor<TResult> typedVisitor = visitor as IXlWriteVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitRgbColor(this);
+			if (typedVisitor != null) return typedVisitor.VisitNumber(this);
 			else return visitor.VisitChildren(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public RgbColorContext rgbColor() {
-		RgbColorContext _localctx = new RgbColorContext(Context, State);
-		EnterRule(_localctx, 24, RULE_rgbColor);
+	public NumberContext number() {
+		NumberContext _localctx = new NumberContext(Context, State);
+		EnterRule(_localctx, 44, RULE_number);
+		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 83;
-			Match(T__7);
-			State = 84;
-			Match(INT);
-			State = 85;
-			Match(INT);
-			State = 86;
-			Match(INT);
+			State = 258;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			if (_la==MINUS) {
+				{
+				State = 257;
+				Match(MINUS);
+				}
+			}
+
+			State = 260;
+			_la = TokenStream.LA(1);
+			if ( !(_la==FLOAT || _la==INT) ) {
+			ErrorHandler.RecoverInline(this);
+			}
+			else {
+				ErrorHandler.ReportMatch(this);
+			    Consume();
+			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -966,31 +3304,99 @@ public partial class XlWriteParser : Parser {
 	}
 
 	private static int[] _serializedATN = {
-		4,1,16,89,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,
-		7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,1,0,5,0,28,8,0,10,0,
-		12,0,31,9,0,1,1,1,1,1,1,1,2,1,2,1,2,1,2,1,3,3,3,41,8,3,1,3,1,3,3,3,45,
-		8,3,1,4,1,4,1,4,1,4,5,4,51,8,4,10,4,12,4,54,9,4,3,4,56,8,4,1,4,1,4,1,5,
-		1,5,1,5,1,5,3,5,64,8,5,1,6,1,6,1,7,1,7,1,7,1,8,1,8,1,8,1,9,1,9,3,9,76,
-		8,9,1,10,1,10,3,10,80,8,10,1,11,1,11,1,12,1,12,1,12,1,12,1,12,1,12,0,0,
-		13,0,2,4,6,8,10,12,14,16,18,20,22,24,0,1,1,0,5,7,85,0,29,1,0,0,0,2,32,
-		1,0,0,0,4,35,1,0,0,0,6,40,1,0,0,0,8,46,1,0,0,0,10,63,1,0,0,0,12,65,1,0,
-		0,0,14,67,1,0,0,0,16,70,1,0,0,0,18,73,1,0,0,0,20,79,1,0,0,0,22,81,1,0,
-		0,0,24,83,1,0,0,0,26,28,3,2,1,0,27,26,1,0,0,0,28,31,1,0,0,0,29,27,1,0,
-		0,0,29,30,1,0,0,0,30,1,1,0,0,0,31,29,1,0,0,0,32,33,3,6,3,0,33,34,3,8,4,
-		0,34,3,1,0,0,0,35,36,5,9,0,0,36,37,5,10,0,0,37,38,5,9,0,0,38,5,1,0,0,0,
-		39,41,5,11,0,0,40,39,1,0,0,0,40,41,1,0,0,0,41,44,1,0,0,0,42,45,5,9,0,0,
-		43,45,3,4,2,0,44,42,1,0,0,0,44,43,1,0,0,0,45,7,1,0,0,0,46,55,5,12,0,0,
-		47,52,3,10,5,0,48,49,5,14,0,0,49,51,3,10,5,0,50,48,1,0,0,0,51,54,1,0,0,
-		0,52,50,1,0,0,0,52,53,1,0,0,0,53,56,1,0,0,0,54,52,1,0,0,0,55,47,1,0,0,
-		0,55,56,1,0,0,0,56,57,1,0,0,0,57,58,5,13,0,0,58,9,1,0,0,0,59,64,3,14,7,
-		0,60,64,3,16,8,0,61,64,3,18,9,0,62,64,3,12,6,0,63,59,1,0,0,0,63,60,1,0,
-		0,0,63,61,1,0,0,0,63,62,1,0,0,0,64,11,1,0,0,0,65,66,5,1,0,0,66,13,1,0,
-		0,0,67,68,5,2,0,0,68,69,3,20,10,0,69,15,1,0,0,0,70,71,5,3,0,0,71,72,5,
-		15,0,0,72,17,1,0,0,0,73,75,5,4,0,0,74,76,3,20,10,0,75,74,1,0,0,0,75,76,
-		1,0,0,0,76,19,1,0,0,0,77,80,3,24,12,0,78,80,3,22,11,0,79,77,1,0,0,0,79,
-		78,1,0,0,0,80,21,1,0,0,0,81,82,7,0,0,0,82,23,1,0,0,0,83,84,5,8,0,0,84,
-		85,5,15,0,0,85,86,5,15,0,0,86,87,5,15,0,0,87,25,1,0,0,0,8,29,40,44,52,
-		55,63,75,79
+		4,1,120,263,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,
+		7,7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,2,14,7,14,
+		2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,7,20,2,21,7,21,
+		2,22,7,22,1,0,5,0,48,8,0,10,0,12,0,51,9,0,1,0,1,0,1,1,4,1,56,8,1,11,1,
+		12,1,57,1,1,5,1,61,8,1,10,1,12,1,64,9,1,1,1,4,1,67,8,1,11,1,12,1,68,1,
+		2,3,2,72,8,2,1,2,1,2,1,3,1,3,3,3,78,8,3,1,4,1,4,1,4,1,4,1,4,1,4,3,4,86,
+		8,4,3,4,88,8,4,1,5,1,5,1,5,1,5,1,5,3,5,95,8,5,1,6,1,6,1,6,1,7,1,7,3,7,
+		102,8,7,1,8,1,8,3,8,106,8,8,1,8,1,8,3,8,110,8,8,1,8,1,8,3,8,114,8,8,1,
+		8,1,8,3,8,118,8,8,1,8,1,8,3,8,122,8,8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,
+		1,8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,1,8,5,8,144,8,8,10,8,12,8,
+		147,9,8,1,8,3,8,150,8,8,1,8,3,8,153,8,8,3,8,155,8,8,1,9,1,9,1,9,1,9,4,
+		9,161,8,9,11,9,12,9,162,1,9,3,9,166,8,9,1,9,1,9,1,9,1,9,1,9,1,9,1,9,3,
+		9,175,8,9,1,9,1,9,1,9,1,9,1,9,1,9,3,9,183,8,9,1,10,1,10,1,10,1,10,1,10,
+		1,10,1,10,1,10,1,10,1,10,1,10,1,10,1,10,1,10,1,10,1,10,1,10,1,10,1,10,
+		1,10,1,10,1,10,1,10,1,10,1,10,1,10,3,10,211,8,10,1,10,1,10,1,10,3,10,216,
+		8,10,1,10,1,10,1,10,1,10,1,10,1,10,1,10,3,10,225,8,10,1,11,1,11,1,12,1,
+		12,1,12,3,12,232,8,12,1,13,1,13,1,14,1,14,1,15,1,15,1,16,1,16,1,17,1,17,
+		1,18,1,18,1,19,1,19,1,20,1,20,1,20,1,20,1,20,1,20,3,20,254,8,20,1,21,1,
+		21,1,22,3,22,259,8,22,1,22,1,22,1,22,0,0,23,0,2,4,6,8,10,12,14,16,18,20,
+		22,24,26,28,30,32,34,36,38,40,42,44,0,18,1,0,3,4,1,0,9,10,1,0,12,13,1,
+		0,14,15,1,0,17,18,1,0,19,20,1,0,21,22,1,0,23,24,1,0,49,55,1,0,56,65,1,
+		0,66,71,1,0,72,75,1,0,76,78,3,0,42,43,77,77,79,79,4,0,42,43,76,76,78,78,
+		80,82,1,0,83,89,1,0,91,100,1,0,114,115,307,0,49,1,0,0,0,2,55,1,0,0,0,4,
+		71,1,0,0,0,6,77,1,0,0,0,8,87,1,0,0,0,10,94,1,0,0,0,12,96,1,0,0,0,14,101,
+		1,0,0,0,16,154,1,0,0,0,18,182,1,0,0,0,20,224,1,0,0,0,22,226,1,0,0,0,24,
+		231,1,0,0,0,26,233,1,0,0,0,28,235,1,0,0,0,30,237,1,0,0,0,32,239,1,0,0,
+		0,34,241,1,0,0,0,36,243,1,0,0,0,38,245,1,0,0,0,40,253,1,0,0,0,42,255,1,
+		0,0,0,44,258,1,0,0,0,46,48,3,2,1,0,47,46,1,0,0,0,48,51,1,0,0,0,49,47,1,
+		0,0,0,49,50,1,0,0,0,50,52,1,0,0,0,51,49,1,0,0,0,52,53,5,0,0,1,53,1,1,0,
+		0,0,54,56,3,4,2,0,55,54,1,0,0,0,56,57,1,0,0,0,57,55,1,0,0,0,57,58,1,0,
+		0,0,58,62,1,0,0,0,59,61,3,12,6,0,60,59,1,0,0,0,61,64,1,0,0,0,62,60,1,0,
+		0,0,62,63,1,0,0,0,63,66,1,0,0,0,64,62,1,0,0,0,65,67,3,14,7,0,66,65,1,0,
+		0,0,67,68,1,0,0,0,68,66,1,0,0,0,68,69,1,0,0,0,69,3,1,0,0,0,70,72,3,6,3,
+		0,71,70,1,0,0,0,71,72,1,0,0,0,72,73,1,0,0,0,73,74,3,8,4,0,74,5,1,0,0,0,
+		75,78,5,116,0,0,76,78,5,112,0,0,77,75,1,0,0,0,77,76,1,0,0,0,78,7,1,0,0,
+		0,79,88,5,111,0,0,80,88,5,108,0,0,81,88,5,109,0,0,82,88,5,110,0,0,83,85,
+		5,107,0,0,84,86,3,10,5,0,85,84,1,0,0,0,85,86,1,0,0,0,86,88,1,0,0,0,87,
+		79,1,0,0,0,87,80,1,0,0,0,87,81,1,0,0,0,87,82,1,0,0,0,87,83,1,0,0,0,88,
+		9,1,0,0,0,89,95,5,1,0,0,90,95,5,2,0,0,91,92,7,0,0,0,92,95,5,116,0,0,93,
+		95,5,5,0,0,94,89,1,0,0,0,94,90,1,0,0,0,94,91,1,0,0,0,94,93,1,0,0,0,95,
+		11,1,0,0,0,96,97,5,104,0,0,97,98,3,20,10,0,98,13,1,0,0,0,99,102,3,16,8,
+		0,100,102,3,18,9,0,101,99,1,0,0,0,101,100,1,0,0,0,102,15,1,0,0,0,103,105,
+		5,6,0,0,104,106,3,30,15,0,105,104,1,0,0,0,105,106,1,0,0,0,106,155,1,0,
+		0,0,107,109,5,7,0,0,108,110,3,30,15,0,109,108,1,0,0,0,109,110,1,0,0,0,
+		110,155,1,0,0,0,111,113,5,8,0,0,112,114,3,30,15,0,113,112,1,0,0,0,113,
+		114,1,0,0,0,114,155,1,0,0,0,115,117,7,1,0,0,116,118,3,30,15,0,117,116,
+		1,0,0,0,117,118,1,0,0,0,118,155,1,0,0,0,119,121,5,11,0,0,120,122,3,30,
+		15,0,121,120,1,0,0,0,121,122,1,0,0,0,122,155,1,0,0,0,123,124,7,2,0,0,124,
+		155,3,40,20,0,125,126,7,3,0,0,126,155,3,40,20,0,127,128,5,16,0,0,128,155,
+		5,116,0,0,129,130,7,4,0,0,130,155,3,44,22,0,131,132,7,5,0,0,132,155,3,
+		44,22,0,133,134,7,6,0,0,134,155,3,44,22,0,135,136,7,7,0,0,136,155,5,116,
+		0,0,137,138,5,25,0,0,138,155,3,32,16,0,139,140,5,26,0,0,140,155,3,34,17,
+		0,141,145,5,27,0,0,142,144,3,36,18,0,143,142,1,0,0,0,144,147,1,0,0,0,145,
+		143,1,0,0,0,145,146,1,0,0,0,146,149,1,0,0,0,147,145,1,0,0,0,148,150,3,
+		38,19,0,149,148,1,0,0,0,149,150,1,0,0,0,150,152,1,0,0,0,151,153,3,40,20,
+		0,152,151,1,0,0,0,152,153,1,0,0,0,153,155,1,0,0,0,154,103,1,0,0,0,154,
+		107,1,0,0,0,154,111,1,0,0,0,154,115,1,0,0,0,154,119,1,0,0,0,154,123,1,
+		0,0,0,154,125,1,0,0,0,154,127,1,0,0,0,154,129,1,0,0,0,154,131,1,0,0,0,
+		154,133,1,0,0,0,154,135,1,0,0,0,154,137,1,0,0,0,154,139,1,0,0,0,154,141,
+		1,0,0,0,155,17,1,0,0,0,156,157,5,28,0,0,157,158,3,20,10,0,158,160,5,102,
+		0,0,159,161,3,16,8,0,160,159,1,0,0,0,161,162,1,0,0,0,162,160,1,0,0,0,162,
+		163,1,0,0,0,163,165,1,0,0,0,164,166,5,101,0,0,165,164,1,0,0,0,165,166,
+		1,0,0,0,166,167,1,0,0,0,167,168,5,103,0,0,168,183,1,0,0,0,169,170,5,28,
+		0,0,170,171,5,29,0,0,171,172,3,40,20,0,172,174,3,40,20,0,173,175,3,40,
+		20,0,174,173,1,0,0,0,174,175,1,0,0,0,175,183,1,0,0,0,176,177,5,28,0,0,
+		177,178,5,30,0,0,178,183,3,40,20,0,179,180,5,28,0,0,180,181,5,31,0,0,181,
+		183,3,28,14,0,182,156,1,0,0,0,182,169,1,0,0,0,182,176,1,0,0,0,182,179,
+		1,0,0,0,183,19,1,0,0,0,184,185,3,22,11,0,185,186,3,24,12,0,186,225,1,0,
+		0,0,187,188,5,32,0,0,188,189,3,24,12,0,189,190,3,24,12,0,190,225,1,0,0,
+		0,191,192,5,33,0,0,192,193,3,24,12,0,193,194,3,24,12,0,194,225,1,0,0,0,
+		195,196,5,34,0,0,196,225,5,116,0,0,197,198,5,35,0,0,198,225,5,116,0,0,
+		199,200,5,36,0,0,200,225,5,116,0,0,201,202,5,37,0,0,202,225,5,116,0,0,
+		203,225,5,38,0,0,204,225,5,39,0,0,205,225,5,40,0,0,206,225,5,41,0,0,207,
+		208,5,42,0,0,208,210,5,115,0,0,209,211,5,105,0,0,210,209,1,0,0,0,210,211,
+		1,0,0,0,211,225,1,0,0,0,212,213,5,43,0,0,213,215,5,115,0,0,214,216,5,105,
+		0,0,215,214,1,0,0,0,215,216,1,0,0,0,216,225,1,0,0,0,217,225,5,44,0,0,218,
+		225,5,45,0,0,219,225,5,46,0,0,220,225,5,47,0,0,221,225,3,26,13,0,222,223,
+		5,48,0,0,223,225,5,116,0,0,224,184,1,0,0,0,224,187,1,0,0,0,224,191,1,0,
+		0,0,224,195,1,0,0,0,224,197,1,0,0,0,224,199,1,0,0,0,224,201,1,0,0,0,224,
+		203,1,0,0,0,224,204,1,0,0,0,224,205,1,0,0,0,224,206,1,0,0,0,224,207,1,
+		0,0,0,224,212,1,0,0,0,224,217,1,0,0,0,224,218,1,0,0,0,224,219,1,0,0,0,
+		224,220,1,0,0,0,224,221,1,0,0,0,224,222,1,0,0,0,225,21,1,0,0,0,226,227,
+		7,8,0,0,227,23,1,0,0,0,228,232,3,44,22,0,229,232,5,116,0,0,230,232,5,111,
+		0,0,231,228,1,0,0,0,231,229,1,0,0,0,231,230,1,0,0,0,232,25,1,0,0,0,233,
+		234,7,9,0,0,234,27,1,0,0,0,235,236,7,10,0,0,236,29,1,0,0,0,237,238,7,11,
+		0,0,238,31,1,0,0,0,239,240,7,12,0,0,240,33,1,0,0,0,241,242,7,13,0,0,242,
+		35,1,0,0,0,243,244,7,14,0,0,244,37,1,0,0,0,245,246,7,15,0,0,246,39,1,0,
+		0,0,247,254,5,113,0,0,248,249,5,90,0,0,249,250,5,115,0,0,250,251,5,115,
+		0,0,251,254,5,115,0,0,252,254,3,42,21,0,253,247,1,0,0,0,253,248,1,0,0,
+		0,253,252,1,0,0,0,254,41,1,0,0,0,255,256,7,16,0,0,256,43,1,0,0,0,257,259,
+		5,106,0,0,258,257,1,0,0,0,258,259,1,0,0,0,259,260,1,0,0,0,260,261,7,17,
+		0,0,261,45,1,0,0,0,29,49,57,62,68,71,77,85,87,94,101,105,109,113,117,121,
+		145,149,152,154,162,165,174,182,210,215,224,231,253,258
 	};
 
 	public static readonly ATN _ATN =

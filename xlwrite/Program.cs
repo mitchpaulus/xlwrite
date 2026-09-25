@@ -828,7 +828,6 @@ public class Program
         helpText.AppendLine("USAGE:");
         helpText.AppendLine("    xlwrite [OPTION].. block STARTCELL DATAFILE EXCELFILE");
         helpText.AppendLine("    xlwrite [OPTION].. ind DATAFILE EXCELFILE");
-        helpText.AppendLine("    xlwrite compile SCRIPTFILE");
         helpText.AppendLine();
         helpText.AppendLine("ARGS:");
         helpText.AppendLine($"    {"STARTCELL",padding}Upper left hand corner cell. Either A1 form or R1C1 form.");
@@ -880,32 +879,10 @@ public class Program
     {
         AntlrInputStream stream = filepath == "-" ? new AntlrInputStream(Console.In) : new AntlrFileStream(filepath, Encoding.UTF8);
 
-        XlWriteLexer l = new(stream);
-        CommonTokenStream tokenStream = new(l);
-        XlWriteParser parser = new(tokenStream);
-        parser.RemoveErrorListeners();
-        ErrorListener errorListener = new();
-        parser.AddErrorListener(errorListener);
-        var file = parser.file();
+        (FormatScript? script, List<string> errors) = FormatCompiler.Compile(stream);
+        if (script is null) return ("", errors);
 
-        if (errorListener.Messages.Any())
-        {
-            return ("", errorListener.Messages);
-        }
-
-        ParseTreeWalker walker = new();
-        var listener = new FormatListener();
-
-        walker.Walk(listener, file);
-
-        StringBuilder b = new();
-        foreach (var line in listener.Lines)
-        {
-            b.Append(line);
-            b.Append('\n');
-        }
-
-        return (b.ToString(), new List<string>());
+        return (VbaFormatWriter.Write(script), errors);
     }
 }
 
@@ -915,12 +892,12 @@ public class ErrorListener : IAntlrErrorListener<IToken>, IAntlrErrorListener<in
 
     public void SyntaxError(TextWriter output, IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
     {
-        Messages.Add(msg);
+        Messages.Add($"{line}:{charPositionInLine + 1}: {msg}");
     }
 
     public void SyntaxError(TextWriter output, IRecognizer recognizer, int offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
     {
-        Messages.Add(msg);
+        Messages.Add($"{line}:{charPositionInLine + 1}: {msg}");
     }
 }
 

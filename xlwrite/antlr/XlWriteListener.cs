@@ -51,16 +51,6 @@ public interface IXlWriteListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitItem([NotNull] XlWriteParser.ItemContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="XlWriteParser.range"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterRange([NotNull] XlWriteParser.RangeContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="XlWriteParser.range"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitRange([NotNull] XlWriteParser.RangeContext context);
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="XlWriteParser.selection"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -71,113 +61,779 @@ public interface IXlWriteListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitSelection([NotNull] XlWriteParser.SelectionContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="XlWriteParser.actions"/>.
+	/// Enter a parse tree produced by the <c>QuotedSheet</c>
+	/// labeled alternative in <see cref="XlWriteParser.sheet"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterActions([NotNull] XlWriteParser.ActionsContext context);
+	void EnterQuotedSheet([NotNull] XlWriteParser.QuotedSheetContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="XlWriteParser.actions"/>.
+	/// Exit a parse tree produced by the <c>QuotedSheet</c>
+	/// labeled alternative in <see cref="XlWriteParser.sheet"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitActions([NotNull] XlWriteParser.ActionsContext context);
+	void ExitQuotedSheet([NotNull] XlWriteParser.QuotedSheetContext context);
 	/// <summary>
-	/// Enter a parse tree produced by the <c>fillActionExp</c>
+	/// Enter a parse tree produced by the <c>PrefixSheet</c>
+	/// labeled alternative in <see cref="XlWriteParser.sheet"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterPrefixSheet([NotNull] XlWriteParser.PrefixSheetContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>PrefixSheet</c>
+	/// labeled alternative in <see cref="XlWriteParser.sheet"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitPrefixSheet([NotNull] XlWriteParser.PrefixSheetContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>CellRef</c>
+	/// labeled alternative in <see cref="XlWriteParser.ref"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCellRef([NotNull] XlWriteParser.CellRefContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>CellRef</c>
+	/// labeled alternative in <see cref="XlWriteParser.ref"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCellRef([NotNull] XlWriteParser.CellRefContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>CellRangeRef</c>
+	/// labeled alternative in <see cref="XlWriteParser.ref"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCellRangeRef([NotNull] XlWriteParser.CellRangeRefContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>CellRangeRef</c>
+	/// labeled alternative in <see cref="XlWriteParser.ref"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCellRangeRef([NotNull] XlWriteParser.CellRangeRefContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>ColumnRangeRef</c>
+	/// labeled alternative in <see cref="XlWriteParser.ref"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterColumnRangeRef([NotNull] XlWriteParser.ColumnRangeRefContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>ColumnRangeRef</c>
+	/// labeled alternative in <see cref="XlWriteParser.ref"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitColumnRangeRef([NotNull] XlWriteParser.ColumnRangeRefContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>RowRangeRef</c>
+	/// labeled alternative in <see cref="XlWriteParser.ref"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterRowRangeRef([NotNull] XlWriteParser.RowRangeRefContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>RowRangeRef</c>
+	/// labeled alternative in <see cref="XlWriteParser.ref"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitRowRangeRef([NotNull] XlWriteParser.RowRangeRefContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>TableRef</c>
+	/// labeled alternative in <see cref="XlWriteParser.ref"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTableRef([NotNull] XlWriteParser.TableRefContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>TableRef</c>
+	/// labeled alternative in <see cref="XlWriteParser.ref"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTableRef([NotNull] XlWriteParser.TableRefContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>TableHeader</c>
+	/// labeled alternative in <see cref="XlWriteParser.tablePart"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTableHeader([NotNull] XlWriteParser.TableHeaderContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>TableHeader</c>
+	/// labeled alternative in <see cref="XlWriteParser.tablePart"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTableHeader([NotNull] XlWriteParser.TableHeaderContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>TableBody</c>
+	/// labeled alternative in <see cref="XlWriteParser.tablePart"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTableBody([NotNull] XlWriteParser.TableBodyContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>TableBody</c>
+	/// labeled alternative in <see cref="XlWriteParser.tablePart"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTableBody([NotNull] XlWriteParser.TableBodyContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>TableColumn</c>
+	/// labeled alternative in <see cref="XlWriteParser.tablePart"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTableColumn([NotNull] XlWriteParser.TableColumnContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>TableColumn</c>
+	/// labeled alternative in <see cref="XlWriteParser.tablePart"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTableColumn([NotNull] XlWriteParser.TableColumnContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>TableLastRow</c>
+	/// labeled alternative in <see cref="XlWriteParser.tablePart"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTableLastRow([NotNull] XlWriteParser.TableLastRowContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>TableLastRow</c>
+	/// labeled alternative in <see cref="XlWriteParser.tablePart"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTableLastRow([NotNull] XlWriteParser.TableLastRowContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XlWriteParser.filter"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFilter([NotNull] XlWriteParser.FilterContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XlWriteParser.filter"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFilter([NotNull] XlWriteParser.FilterContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>ActionElement</c>
+	/// labeled alternative in <see cref="XlWriteParser.element"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterActionElement([NotNull] XlWriteParser.ActionElementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>ActionElement</c>
+	/// labeled alternative in <see cref="XlWriteParser.element"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitActionElement([NotNull] XlWriteParser.ActionElementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>CfElement</c>
+	/// labeled alternative in <see cref="XlWriteParser.element"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCfElement([NotNull] XlWriteParser.CfElementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>CfElement</c>
+	/// labeled alternative in <see cref="XlWriteParser.element"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCfElement([NotNull] XlWriteParser.CfElementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>BoldAction</c>
 	/// labeled alternative in <see cref="XlWriteParser.action"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterFillActionExp([NotNull] XlWriteParser.FillActionExpContext context);
-	/// <summary>
-	/// Exit a parse tree produced by the <c>fillActionExp</c>
-	/// labeled alternative in <see cref="XlWriteParser.action"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitFillActionExp([NotNull] XlWriteParser.FillActionExpContext context);
-	/// <summary>
-	/// Enter a parse tree produced by the <c>widthActionExp</c>
-	/// labeled alternative in <see cref="XlWriteParser.action"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterWidthActionExp([NotNull] XlWriteParser.WidthActionExpContext context);
-	/// <summary>
-	/// Exit a parse tree produced by the <c>widthActionExp</c>
-	/// labeled alternative in <see cref="XlWriteParser.action"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitWidthActionExp([NotNull] XlWriteParser.WidthActionExpContext context);
-	/// <summary>
-	/// Enter a parse tree produced by the <c>borderActionExp</c>
-	/// labeled alternative in <see cref="XlWriteParser.action"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterBorderActionExp([NotNull] XlWriteParser.BorderActionExpContext context);
-	/// <summary>
-	/// Exit a parse tree produced by the <c>borderActionExp</c>
-	/// labeled alternative in <see cref="XlWriteParser.action"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitBorderActionExp([NotNull] XlWriteParser.BorderActionExpContext context);
-	/// <summary>
-	/// Enter a parse tree produced by the <c>boldActionExp</c>
-	/// labeled alternative in <see cref="XlWriteParser.action"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterBoldActionExp([NotNull] XlWriteParser.BoldActionExpContext context);
-	/// <summary>
-	/// Exit a parse tree produced by the <c>boldActionExp</c>
-	/// labeled alternative in <see cref="XlWriteParser.action"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitBoldActionExp([NotNull] XlWriteParser.BoldActionExpContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="XlWriteParser.boldAction"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void EnterBoldAction([NotNull] XlWriteParser.BoldActionContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="XlWriteParser.boldAction"/>.
+	/// Exit a parse tree produced by the <c>BoldAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitBoldAction([NotNull] XlWriteParser.BoldActionContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="XlWriteParser.fillAction"/>.
+	/// Enter a parse tree produced by the <c>ItalicAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterItalicAction([NotNull] XlWriteParser.ItalicActionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>ItalicAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitItalicAction([NotNull] XlWriteParser.ItalicActionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>UnderlineAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterUnderlineAction([NotNull] XlWriteParser.UnderlineActionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>UnderlineAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitUnderlineAction([NotNull] XlWriteParser.UnderlineActionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>StrikeAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterStrikeAction([NotNull] XlWriteParser.StrikeActionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>StrikeAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitStrikeAction([NotNull] XlWriteParser.StrikeActionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>WrapAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterWrapAction([NotNull] XlWriteParser.WrapActionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>WrapAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitWrapAction([NotNull] XlWriteParser.WrapActionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>FillAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void EnterFillAction([NotNull] XlWriteParser.FillActionContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="XlWriteParser.fillAction"/>.
+	/// Exit a parse tree produced by the <c>FillAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitFillAction([NotNull] XlWriteParser.FillActionContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="XlWriteParser.widthAction"/>.
+	/// Enter a parse tree produced by the <c>FontColorAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFontColorAction([NotNull] XlWriteParser.FontColorActionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>FontColorAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFontColorAction([NotNull] XlWriteParser.FontColorActionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>FontAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFontAction([NotNull] XlWriteParser.FontActionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>FontAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFontAction([NotNull] XlWriteParser.FontActionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>FontSizeAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFontSizeAction([NotNull] XlWriteParser.FontSizeActionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>FontSizeAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFontSizeAction([NotNull] XlWriteParser.FontSizeActionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>WidthAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void EnterWidthAction([NotNull] XlWriteParser.WidthActionContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="XlWriteParser.widthAction"/>.
+	/// Exit a parse tree produced by the <c>WidthAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitWidthAction([NotNull] XlWriteParser.WidthActionContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="XlWriteParser.borderAction"/>.
+	/// Enter a parse tree produced by the <c>HeightAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterHeightAction([NotNull] XlWriteParser.HeightActionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>HeightAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitHeightAction([NotNull] XlWriteParser.HeightActionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>NumberFormatAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterNumberFormatAction([NotNull] XlWriteParser.NumberFormatActionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>NumberFormatAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitNumberFormatAction([NotNull] XlWriteParser.NumberFormatActionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>AlignAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAlignAction([NotNull] XlWriteParser.AlignActionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>AlignAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAlignAction([NotNull] XlWriteParser.AlignActionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>VAlignAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterVAlignAction([NotNull] XlWriteParser.VAlignActionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>VAlignAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitVAlignAction([NotNull] XlWriteParser.VAlignActionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>BorderAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void EnterBorderAction([NotNull] XlWriteParser.BorderActionContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="XlWriteParser.borderAction"/>.
+	/// Exit a parse tree produced by the <c>BorderAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitBorderAction([NotNull] XlWriteParser.BorderActionContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="XlWriteParser.color"/>.
+	/// Enter a parse tree produced by the <c>CondRule</c>
+	/// labeled alternative in <see cref="XlWriteParser.cfRule"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterColor([NotNull] XlWriteParser.ColorContext context);
+	void EnterCondRule([NotNull] XlWriteParser.CondRuleContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="XlWriteParser.color"/>.
+	/// Exit a parse tree produced by the <c>CondRule</c>
+	/// labeled alternative in <see cref="XlWriteParser.cfRule"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitColor([NotNull] XlWriteParser.ColorContext context);
+	void ExitCondRule([NotNull] XlWriteParser.CondRuleContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>ScaleRule</c>
+	/// labeled alternative in <see cref="XlWriteParser.cfRule"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterScaleRule([NotNull] XlWriteParser.ScaleRuleContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>ScaleRule</c>
+	/// labeled alternative in <see cref="XlWriteParser.cfRule"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitScaleRule([NotNull] XlWriteParser.ScaleRuleContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>DataBarRule</c>
+	/// labeled alternative in <see cref="XlWriteParser.cfRule"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDataBarRule([NotNull] XlWriteParser.DataBarRuleContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>DataBarRule</c>
+	/// labeled alternative in <see cref="XlWriteParser.cfRule"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDataBarRule([NotNull] XlWriteParser.DataBarRuleContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>IconsRule</c>
+	/// labeled alternative in <see cref="XlWriteParser.cfRule"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterIconsRule([NotNull] XlWriteParser.IconsRuleContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>IconsRule</c>
+	/// labeled alternative in <see cref="XlWriteParser.cfRule"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitIconsRule([NotNull] XlWriteParser.IconsRuleContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>CompareCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCompareCond([NotNull] XlWriteParser.CompareCondContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>CompareCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCompareCond([NotNull] XlWriteParser.CompareCondContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>BetweenCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBetweenCond([NotNull] XlWriteParser.BetweenCondContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>BetweenCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBetweenCond([NotNull] XlWriteParser.BetweenCondContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>NotBetweenCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterNotBetweenCond([NotNull] XlWriteParser.NotBetweenCondContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>NotBetweenCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitNotBetweenCond([NotNull] XlWriteParser.NotBetweenCondContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>ContainsCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterContainsCond([NotNull] XlWriteParser.ContainsCondContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>ContainsCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitContainsCond([NotNull] XlWriteParser.ContainsCondContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>NotContainsCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterNotContainsCond([NotNull] XlWriteParser.NotContainsCondContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>NotContainsCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitNotContainsCond([NotNull] XlWriteParser.NotContainsCondContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>BeginsCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBeginsCond([NotNull] XlWriteParser.BeginsCondContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>BeginsCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBeginsCond([NotNull] XlWriteParser.BeginsCondContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>EndsCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterEndsCond([NotNull] XlWriteParser.EndsCondContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>EndsCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitEndsCond([NotNull] XlWriteParser.EndsCondContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>BlankCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBlankCond([NotNull] XlWriteParser.BlankCondContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>BlankCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBlankCond([NotNull] XlWriteParser.BlankCondContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>NonBlankCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterNonBlankCond([NotNull] XlWriteParser.NonBlankCondContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>NonBlankCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitNonBlankCond([NotNull] XlWriteParser.NonBlankCondContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>ErrorCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterErrorCond([NotNull] XlWriteParser.ErrorCondContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>ErrorCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitErrorCond([NotNull] XlWriteParser.ErrorCondContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>NoErrorCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterNoErrorCond([NotNull] XlWriteParser.NoErrorCondContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>NoErrorCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitNoErrorCond([NotNull] XlWriteParser.NoErrorCondContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>TopCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTopCond([NotNull] XlWriteParser.TopCondContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>TopCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTopCond([NotNull] XlWriteParser.TopCondContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>BottomCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBottomCond([NotNull] XlWriteParser.BottomCondContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>BottomCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBottomCond([NotNull] XlWriteParser.BottomCondContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>AboveAvgCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAboveAvgCond([NotNull] XlWriteParser.AboveAvgCondContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>AboveAvgCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAboveAvgCond([NotNull] XlWriteParser.AboveAvgCondContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>BelowAvgCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBelowAvgCond([NotNull] XlWriteParser.BelowAvgCondContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>BelowAvgCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBelowAvgCond([NotNull] XlWriteParser.BelowAvgCondContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>DuplicateCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDuplicateCond([NotNull] XlWriteParser.DuplicateCondContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>DuplicateCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDuplicateCond([NotNull] XlWriteParser.DuplicateCondContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>UniqueCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterUniqueCond([NotNull] XlWriteParser.UniqueCondContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>UniqueCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitUniqueCond([NotNull] XlWriteParser.UniqueCondContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>DateCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDateCond([NotNull] XlWriteParser.DateCondContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>DateCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDateCond([NotNull] XlWriteParser.DateCondContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>FormulaCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFormulaCond([NotNull] XlWriteParser.FormulaCondContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>FormulaCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFormulaCond([NotNull] XlWriteParser.FormulaCondContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XlWriteParser.compareOp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCompareOp([NotNull] XlWriteParser.CompareOpContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XlWriteParser.compareOp"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCompareOp([NotNull] XlWriteParser.CompareOpContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>NumberOperand</c>
+	/// labeled alternative in <see cref="XlWriteParser.operand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterNumberOperand([NotNull] XlWriteParser.NumberOperandContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>NumberOperand</c>
+	/// labeled alternative in <see cref="XlWriteParser.operand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitNumberOperand([NotNull] XlWriteParser.NumberOperandContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>StringOperand</c>
+	/// labeled alternative in <see cref="XlWriteParser.operand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterStringOperand([NotNull] XlWriteParser.StringOperandContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>StringOperand</c>
+	/// labeled alternative in <see cref="XlWriteParser.operand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitStringOperand([NotNull] XlWriteParser.StringOperandContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>CellOperand</c>
+	/// labeled alternative in <see cref="XlWriteParser.operand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCellOperand([NotNull] XlWriteParser.CellOperandContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>CellOperand</c>
+	/// labeled alternative in <see cref="XlWriteParser.operand"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCellOperand([NotNull] XlWriteParser.CellOperandContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XlWriteParser.datePeriod"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDatePeriod([NotNull] XlWriteParser.DatePeriodContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XlWriteParser.datePeriod"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDatePeriod([NotNull] XlWriteParser.DatePeriodContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XlWriteParser.iconSet"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterIconSet([NotNull] XlWriteParser.IconSetContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XlWriteParser.iconSet"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitIconSet([NotNull] XlWriteParser.IconSetContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XlWriteParser.toggle"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterToggle([NotNull] XlWriteParser.ToggleContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XlWriteParser.toggle"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitToggle([NotNull] XlWriteParser.ToggleContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XlWriteParser.hAlign"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterHAlign([NotNull] XlWriteParser.HAlignContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XlWriteParser.hAlign"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitHAlign([NotNull] XlWriteParser.HAlignContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XlWriteParser.vAlign"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterVAlign([NotNull] XlWriteParser.VAlignContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XlWriteParser.vAlign"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitVAlign([NotNull] XlWriteParser.VAlignContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XlWriteParser.borderSide"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBorderSide([NotNull] XlWriteParser.BorderSideContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XlWriteParser.borderSide"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBorderSide([NotNull] XlWriteParser.BorderSideContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XlWriteParser.borderStyle"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBorderStyle([NotNull] XlWriteParser.BorderStyleContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XlWriteParser.borderStyle"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBorderStyle([NotNull] XlWriteParser.BorderStyleContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>HexColor</c>
+	/// labeled alternative in <see cref="XlWriteParser.colorValue"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterHexColor([NotNull] XlWriteParser.HexColorContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>HexColor</c>
+	/// labeled alternative in <see cref="XlWriteParser.colorValue"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitHexColor([NotNull] XlWriteParser.HexColorContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>RgbColor</c>
+	/// labeled alternative in <see cref="XlWriteParser.colorValue"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterRgbColor([NotNull] XlWriteParser.RgbColorContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>RgbColor</c>
+	/// labeled alternative in <see cref="XlWriteParser.colorValue"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitRgbColor([NotNull] XlWriteParser.RgbColorContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>NamedColor</c>
+	/// labeled alternative in <see cref="XlWriteParser.colorValue"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterNamedColor([NotNull] XlWriteParser.NamedColorContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>NamedColor</c>
+	/// labeled alternative in <see cref="XlWriteParser.colorValue"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitNamedColor([NotNull] XlWriteParser.NamedColorContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="XlWriteParser.knownColor"/>.
 	/// </summary>
@@ -189,13 +845,13 @@ public interface IXlWriteListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitKnownColor([NotNull] XlWriteParser.KnownColorContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="XlWriteParser.rgbColor"/>.
+	/// Enter a parse tree produced by <see cref="XlWriteParser.number"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterRgbColor([NotNull] XlWriteParser.RgbColorContext context);
+	void EnterNumber([NotNull] XlWriteParser.NumberContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="XlWriteParser.rgbColor"/>.
+	/// Exit a parse tree produced by <see cref="XlWriteParser.number"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitRgbColor([NotNull] XlWriteParser.RgbColorContext context);
+	void ExitNumber([NotNull] XlWriteParser.NumberContext context);
 }

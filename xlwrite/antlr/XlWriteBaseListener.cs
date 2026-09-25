@@ -60,18 +60,6 @@ public partial class XlWriteBaseListener : IXlWriteListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitItem([NotNull] XlWriteParser.ItemContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="XlWriteParser.range"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterRange([NotNull] XlWriteParser.RangeContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="XlWriteParser.range"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitRange([NotNull] XlWriteParser.RangeContext context) { }
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="XlWriteParser.selection"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -84,133 +72,911 @@ public partial class XlWriteBaseListener : IXlWriteListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitSelection([NotNull] XlWriteParser.SelectionContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="XlWriteParser.actions"/>.
+	/// Enter a parse tree produced by the <c>QuotedSheet</c>
+	/// labeled alternative in <see cref="XlWriteParser.sheet"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterActions([NotNull] XlWriteParser.ActionsContext context) { }
+	public virtual void EnterQuotedSheet([NotNull] XlWriteParser.QuotedSheetContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="XlWriteParser.actions"/>.
+	/// Exit a parse tree produced by the <c>QuotedSheet</c>
+	/// labeled alternative in <see cref="XlWriteParser.sheet"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitActions([NotNull] XlWriteParser.ActionsContext context) { }
+	public virtual void ExitQuotedSheet([NotNull] XlWriteParser.QuotedSheetContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by the <c>fillActionExp</c>
+	/// Enter a parse tree produced by the <c>PrefixSheet</c>
+	/// labeled alternative in <see cref="XlWriteParser.sheet"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterPrefixSheet([NotNull] XlWriteParser.PrefixSheetContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>PrefixSheet</c>
+	/// labeled alternative in <see cref="XlWriteParser.sheet"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitPrefixSheet([NotNull] XlWriteParser.PrefixSheetContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>CellRef</c>
+	/// labeled alternative in <see cref="XlWriteParser.ref"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCellRef([NotNull] XlWriteParser.CellRefContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>CellRef</c>
+	/// labeled alternative in <see cref="XlWriteParser.ref"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCellRef([NotNull] XlWriteParser.CellRefContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>CellRangeRef</c>
+	/// labeled alternative in <see cref="XlWriteParser.ref"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCellRangeRef([NotNull] XlWriteParser.CellRangeRefContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>CellRangeRef</c>
+	/// labeled alternative in <see cref="XlWriteParser.ref"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCellRangeRef([NotNull] XlWriteParser.CellRangeRefContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>ColumnRangeRef</c>
+	/// labeled alternative in <see cref="XlWriteParser.ref"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterColumnRangeRef([NotNull] XlWriteParser.ColumnRangeRefContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>ColumnRangeRef</c>
+	/// labeled alternative in <see cref="XlWriteParser.ref"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitColumnRangeRef([NotNull] XlWriteParser.ColumnRangeRefContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>RowRangeRef</c>
+	/// labeled alternative in <see cref="XlWriteParser.ref"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterRowRangeRef([NotNull] XlWriteParser.RowRangeRefContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>RowRangeRef</c>
+	/// labeled alternative in <see cref="XlWriteParser.ref"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitRowRangeRef([NotNull] XlWriteParser.RowRangeRefContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>TableRef</c>
+	/// labeled alternative in <see cref="XlWriteParser.ref"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterTableRef([NotNull] XlWriteParser.TableRefContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>TableRef</c>
+	/// labeled alternative in <see cref="XlWriteParser.ref"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitTableRef([NotNull] XlWriteParser.TableRefContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>TableHeader</c>
+	/// labeled alternative in <see cref="XlWriteParser.tablePart"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterTableHeader([NotNull] XlWriteParser.TableHeaderContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>TableHeader</c>
+	/// labeled alternative in <see cref="XlWriteParser.tablePart"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitTableHeader([NotNull] XlWriteParser.TableHeaderContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>TableBody</c>
+	/// labeled alternative in <see cref="XlWriteParser.tablePart"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterTableBody([NotNull] XlWriteParser.TableBodyContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>TableBody</c>
+	/// labeled alternative in <see cref="XlWriteParser.tablePart"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitTableBody([NotNull] XlWriteParser.TableBodyContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>TableColumn</c>
+	/// labeled alternative in <see cref="XlWriteParser.tablePart"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterTableColumn([NotNull] XlWriteParser.TableColumnContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>TableColumn</c>
+	/// labeled alternative in <see cref="XlWriteParser.tablePart"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitTableColumn([NotNull] XlWriteParser.TableColumnContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>TableLastRow</c>
+	/// labeled alternative in <see cref="XlWriteParser.tablePart"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterTableLastRow([NotNull] XlWriteParser.TableLastRowContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>TableLastRow</c>
+	/// labeled alternative in <see cref="XlWriteParser.tablePart"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitTableLastRow([NotNull] XlWriteParser.TableLastRowContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XlWriteParser.filter"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterFilter([NotNull] XlWriteParser.FilterContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XlWriteParser.filter"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitFilter([NotNull] XlWriteParser.FilterContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>ActionElement</c>
+	/// labeled alternative in <see cref="XlWriteParser.element"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterActionElement([NotNull] XlWriteParser.ActionElementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>ActionElement</c>
+	/// labeled alternative in <see cref="XlWriteParser.element"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitActionElement([NotNull] XlWriteParser.ActionElementContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>CfElement</c>
+	/// labeled alternative in <see cref="XlWriteParser.element"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCfElement([NotNull] XlWriteParser.CfElementContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>CfElement</c>
+	/// labeled alternative in <see cref="XlWriteParser.element"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCfElement([NotNull] XlWriteParser.CfElementContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>BoldAction</c>
 	/// labeled alternative in <see cref="XlWriteParser.action"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterFillActionExp([NotNull] XlWriteParser.FillActionExpContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>fillActionExp</c>
-	/// labeled alternative in <see cref="XlWriteParser.action"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitFillActionExp([NotNull] XlWriteParser.FillActionExpContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by the <c>widthActionExp</c>
-	/// labeled alternative in <see cref="XlWriteParser.action"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterWidthActionExp([NotNull] XlWriteParser.WidthActionExpContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>widthActionExp</c>
-	/// labeled alternative in <see cref="XlWriteParser.action"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitWidthActionExp([NotNull] XlWriteParser.WidthActionExpContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by the <c>borderActionExp</c>
-	/// labeled alternative in <see cref="XlWriteParser.action"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterBorderActionExp([NotNull] XlWriteParser.BorderActionExpContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>borderActionExp</c>
-	/// labeled alternative in <see cref="XlWriteParser.action"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitBorderActionExp([NotNull] XlWriteParser.BorderActionExpContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by the <c>boldActionExp</c>
-	/// labeled alternative in <see cref="XlWriteParser.action"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterBoldActionExp([NotNull] XlWriteParser.BoldActionExpContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>boldActionExp</c>
-	/// labeled alternative in <see cref="XlWriteParser.action"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitBoldActionExp([NotNull] XlWriteParser.BoldActionExpContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="XlWriteParser.boldAction"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void EnterBoldAction([NotNull] XlWriteParser.BoldActionContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="XlWriteParser.boldAction"/>.
+	/// Exit a parse tree produced by the <c>BoldAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitBoldAction([NotNull] XlWriteParser.BoldActionContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="XlWriteParser.fillAction"/>.
+	/// Enter a parse tree produced by the <c>ItalicAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterItalicAction([NotNull] XlWriteParser.ItalicActionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>ItalicAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitItalicAction([NotNull] XlWriteParser.ItalicActionContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>UnderlineAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterUnderlineAction([NotNull] XlWriteParser.UnderlineActionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>UnderlineAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitUnderlineAction([NotNull] XlWriteParser.UnderlineActionContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>StrikeAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterStrikeAction([NotNull] XlWriteParser.StrikeActionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>StrikeAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitStrikeAction([NotNull] XlWriteParser.StrikeActionContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>WrapAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterWrapAction([NotNull] XlWriteParser.WrapActionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>WrapAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitWrapAction([NotNull] XlWriteParser.WrapActionContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>FillAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void EnterFillAction([NotNull] XlWriteParser.FillActionContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="XlWriteParser.fillAction"/>.
+	/// Exit a parse tree produced by the <c>FillAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitFillAction([NotNull] XlWriteParser.FillActionContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="XlWriteParser.widthAction"/>.
+	/// Enter a parse tree produced by the <c>FontColorAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterFontColorAction([NotNull] XlWriteParser.FontColorActionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>FontColorAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitFontColorAction([NotNull] XlWriteParser.FontColorActionContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>FontAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterFontAction([NotNull] XlWriteParser.FontActionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>FontAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitFontAction([NotNull] XlWriteParser.FontActionContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>FontSizeAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterFontSizeAction([NotNull] XlWriteParser.FontSizeActionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>FontSizeAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitFontSizeAction([NotNull] XlWriteParser.FontSizeActionContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>WidthAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void EnterWidthAction([NotNull] XlWriteParser.WidthActionContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="XlWriteParser.widthAction"/>.
+	/// Exit a parse tree produced by the <c>WidthAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitWidthAction([NotNull] XlWriteParser.WidthActionContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="XlWriteParser.borderAction"/>.
+	/// Enter a parse tree produced by the <c>HeightAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterHeightAction([NotNull] XlWriteParser.HeightActionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>HeightAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitHeightAction([NotNull] XlWriteParser.HeightActionContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>NumberFormatAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterNumberFormatAction([NotNull] XlWriteParser.NumberFormatActionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>NumberFormatAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitNumberFormatAction([NotNull] XlWriteParser.NumberFormatActionContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>AlignAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterAlignAction([NotNull] XlWriteParser.AlignActionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>AlignAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitAlignAction([NotNull] XlWriteParser.AlignActionContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>VAlignAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterVAlignAction([NotNull] XlWriteParser.VAlignActionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>VAlignAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitVAlignAction([NotNull] XlWriteParser.VAlignActionContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>BorderAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void EnterBorderAction([NotNull] XlWriteParser.BorderActionContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="XlWriteParser.borderAction"/>.
+	/// Exit a parse tree produced by the <c>BorderAction</c>
+	/// labeled alternative in <see cref="XlWriteParser.action"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitBorderAction([NotNull] XlWriteParser.BorderActionContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="XlWriteParser.color"/>.
+	/// Enter a parse tree produced by the <c>CondRule</c>
+	/// labeled alternative in <see cref="XlWriteParser.cfRule"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterColor([NotNull] XlWriteParser.ColorContext context) { }
+	public virtual void EnterCondRule([NotNull] XlWriteParser.CondRuleContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="XlWriteParser.color"/>.
+	/// Exit a parse tree produced by the <c>CondRule</c>
+	/// labeled alternative in <see cref="XlWriteParser.cfRule"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitColor([NotNull] XlWriteParser.ColorContext context) { }
+	public virtual void ExitCondRule([NotNull] XlWriteParser.CondRuleContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>ScaleRule</c>
+	/// labeled alternative in <see cref="XlWriteParser.cfRule"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterScaleRule([NotNull] XlWriteParser.ScaleRuleContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>ScaleRule</c>
+	/// labeled alternative in <see cref="XlWriteParser.cfRule"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitScaleRule([NotNull] XlWriteParser.ScaleRuleContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>DataBarRule</c>
+	/// labeled alternative in <see cref="XlWriteParser.cfRule"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterDataBarRule([NotNull] XlWriteParser.DataBarRuleContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>DataBarRule</c>
+	/// labeled alternative in <see cref="XlWriteParser.cfRule"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitDataBarRule([NotNull] XlWriteParser.DataBarRuleContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>IconsRule</c>
+	/// labeled alternative in <see cref="XlWriteParser.cfRule"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterIconsRule([NotNull] XlWriteParser.IconsRuleContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>IconsRule</c>
+	/// labeled alternative in <see cref="XlWriteParser.cfRule"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitIconsRule([NotNull] XlWriteParser.IconsRuleContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>CompareCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCompareCond([NotNull] XlWriteParser.CompareCondContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>CompareCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCompareCond([NotNull] XlWriteParser.CompareCondContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>BetweenCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterBetweenCond([NotNull] XlWriteParser.BetweenCondContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>BetweenCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitBetweenCond([NotNull] XlWriteParser.BetweenCondContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>NotBetweenCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterNotBetweenCond([NotNull] XlWriteParser.NotBetweenCondContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>NotBetweenCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitNotBetweenCond([NotNull] XlWriteParser.NotBetweenCondContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>ContainsCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterContainsCond([NotNull] XlWriteParser.ContainsCondContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>ContainsCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitContainsCond([NotNull] XlWriteParser.ContainsCondContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>NotContainsCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterNotContainsCond([NotNull] XlWriteParser.NotContainsCondContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>NotContainsCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitNotContainsCond([NotNull] XlWriteParser.NotContainsCondContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>BeginsCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterBeginsCond([NotNull] XlWriteParser.BeginsCondContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>BeginsCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitBeginsCond([NotNull] XlWriteParser.BeginsCondContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>EndsCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterEndsCond([NotNull] XlWriteParser.EndsCondContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>EndsCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitEndsCond([NotNull] XlWriteParser.EndsCondContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>BlankCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterBlankCond([NotNull] XlWriteParser.BlankCondContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>BlankCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitBlankCond([NotNull] XlWriteParser.BlankCondContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>NonBlankCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterNonBlankCond([NotNull] XlWriteParser.NonBlankCondContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>NonBlankCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitNonBlankCond([NotNull] XlWriteParser.NonBlankCondContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>ErrorCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterErrorCond([NotNull] XlWriteParser.ErrorCondContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>ErrorCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitErrorCond([NotNull] XlWriteParser.ErrorCondContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>NoErrorCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterNoErrorCond([NotNull] XlWriteParser.NoErrorCondContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>NoErrorCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitNoErrorCond([NotNull] XlWriteParser.NoErrorCondContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>TopCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterTopCond([NotNull] XlWriteParser.TopCondContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>TopCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitTopCond([NotNull] XlWriteParser.TopCondContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>BottomCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterBottomCond([NotNull] XlWriteParser.BottomCondContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>BottomCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitBottomCond([NotNull] XlWriteParser.BottomCondContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>AboveAvgCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterAboveAvgCond([NotNull] XlWriteParser.AboveAvgCondContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>AboveAvgCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitAboveAvgCond([NotNull] XlWriteParser.AboveAvgCondContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>BelowAvgCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterBelowAvgCond([NotNull] XlWriteParser.BelowAvgCondContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>BelowAvgCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitBelowAvgCond([NotNull] XlWriteParser.BelowAvgCondContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>DuplicateCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterDuplicateCond([NotNull] XlWriteParser.DuplicateCondContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>DuplicateCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitDuplicateCond([NotNull] XlWriteParser.DuplicateCondContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>UniqueCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterUniqueCond([NotNull] XlWriteParser.UniqueCondContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>UniqueCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitUniqueCond([NotNull] XlWriteParser.UniqueCondContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>DateCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterDateCond([NotNull] XlWriteParser.DateCondContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>DateCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitDateCond([NotNull] XlWriteParser.DateCondContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>FormulaCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterFormulaCond([NotNull] XlWriteParser.FormulaCondContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>FormulaCond</c>
+	/// labeled alternative in <see cref="XlWriteParser.condition"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitFormulaCond([NotNull] XlWriteParser.FormulaCondContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XlWriteParser.compareOp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCompareOp([NotNull] XlWriteParser.CompareOpContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XlWriteParser.compareOp"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCompareOp([NotNull] XlWriteParser.CompareOpContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>NumberOperand</c>
+	/// labeled alternative in <see cref="XlWriteParser.operand"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterNumberOperand([NotNull] XlWriteParser.NumberOperandContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>NumberOperand</c>
+	/// labeled alternative in <see cref="XlWriteParser.operand"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitNumberOperand([NotNull] XlWriteParser.NumberOperandContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>StringOperand</c>
+	/// labeled alternative in <see cref="XlWriteParser.operand"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterStringOperand([NotNull] XlWriteParser.StringOperandContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>StringOperand</c>
+	/// labeled alternative in <see cref="XlWriteParser.operand"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitStringOperand([NotNull] XlWriteParser.StringOperandContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>CellOperand</c>
+	/// labeled alternative in <see cref="XlWriteParser.operand"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterCellOperand([NotNull] XlWriteParser.CellOperandContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>CellOperand</c>
+	/// labeled alternative in <see cref="XlWriteParser.operand"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitCellOperand([NotNull] XlWriteParser.CellOperandContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XlWriteParser.datePeriod"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterDatePeriod([NotNull] XlWriteParser.DatePeriodContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XlWriteParser.datePeriod"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitDatePeriod([NotNull] XlWriteParser.DatePeriodContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XlWriteParser.iconSet"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterIconSet([NotNull] XlWriteParser.IconSetContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XlWriteParser.iconSet"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitIconSet([NotNull] XlWriteParser.IconSetContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XlWriteParser.toggle"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterToggle([NotNull] XlWriteParser.ToggleContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XlWriteParser.toggle"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitToggle([NotNull] XlWriteParser.ToggleContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XlWriteParser.hAlign"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterHAlign([NotNull] XlWriteParser.HAlignContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XlWriteParser.hAlign"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitHAlign([NotNull] XlWriteParser.HAlignContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XlWriteParser.vAlign"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterVAlign([NotNull] XlWriteParser.VAlignContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XlWriteParser.vAlign"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitVAlign([NotNull] XlWriteParser.VAlignContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XlWriteParser.borderSide"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterBorderSide([NotNull] XlWriteParser.BorderSideContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XlWriteParser.borderSide"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitBorderSide([NotNull] XlWriteParser.BorderSideContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="XlWriteParser.borderStyle"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterBorderStyle([NotNull] XlWriteParser.BorderStyleContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="XlWriteParser.borderStyle"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitBorderStyle([NotNull] XlWriteParser.BorderStyleContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>HexColor</c>
+	/// labeled alternative in <see cref="XlWriteParser.colorValue"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterHexColor([NotNull] XlWriteParser.HexColorContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>HexColor</c>
+	/// labeled alternative in <see cref="XlWriteParser.colorValue"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitHexColor([NotNull] XlWriteParser.HexColorContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>RgbColor</c>
+	/// labeled alternative in <see cref="XlWriteParser.colorValue"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterRgbColor([NotNull] XlWriteParser.RgbColorContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>RgbColor</c>
+	/// labeled alternative in <see cref="XlWriteParser.colorValue"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitRgbColor([NotNull] XlWriteParser.RgbColorContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>NamedColor</c>
+	/// labeled alternative in <see cref="XlWriteParser.colorValue"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterNamedColor([NotNull] XlWriteParser.NamedColorContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>NamedColor</c>
+	/// labeled alternative in <see cref="XlWriteParser.colorValue"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitNamedColor([NotNull] XlWriteParser.NamedColorContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="XlWriteParser.knownColor"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -224,17 +990,17 @@ public partial class XlWriteBaseListener : IXlWriteListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitKnownColor([NotNull] XlWriteParser.KnownColorContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="XlWriteParser.rgbColor"/>.
+	/// Enter a parse tree produced by <see cref="XlWriteParser.number"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterRgbColor([NotNull] XlWriteParser.RgbColorContext context) { }
+	public virtual void EnterNumber([NotNull] XlWriteParser.NumberContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="XlWriteParser.rgbColor"/>.
+	/// Exit a parse tree produced by <see cref="XlWriteParser.number"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitRgbColor([NotNull] XlWriteParser.RgbColorContext context) { }
+	public virtual void ExitNumber([NotNull] XlWriteParser.NumberContext context) { }
 
 	/// <inheritdoc/>
 	/// <remarks>The default implementation does nothing.</remarks>
